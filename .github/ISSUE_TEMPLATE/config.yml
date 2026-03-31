@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Voir le depot
+    url: https://github.com/chrisou972/social972
+    about: Consulter le code, les workflows et les donnees synchronisees.

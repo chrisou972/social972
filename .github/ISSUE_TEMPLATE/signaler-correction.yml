@@ -1,0 +1,58 @@
+name: Signaler une correction
+description: Corriger une fiche, un numero, une adresse ou une categorie
+title: "[Annuaire] Correction - "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci. Les corrections seront comparees a la source officielle avant mise a jour.
+  - type: input
+    id: structure_name
+    attributes:
+      label: Structure concernee
+      placeholder: Exemple - Centre communal d'action sociale (CCAS) - Le Marin
+    validations:
+      required: true
+  - type: input
+    id: page_url
+    attributes:
+      label: Lien de la fiche Social972 ou source officielle
+      placeholder: https://...
+  - type: dropdown
+    id: correction_type
+    attributes:
+      label: Type de correction
+      options:
+        - Telephone
+        - Email
+        - Adresse
+        - GPS
+        - Horaires
+        - Categorie
+        - Public concerne
+        - Structure fermee
+        - Autre
+    validations:
+      required: true
+  - type: textarea
+    id: current_data
+    attributes:
+      label: Donnee actuelle
+      placeholder: Quelle information est actuellement affichee ?
+  - type: textarea
+    id: expected_data
+    attributes:
+      label: Donnee corrigee
+      placeholder: Quelle information devrait apparaitre ?
+    validations:
+      required: true
+  - type: input
+    id: source_url
+    attributes:
+      label: Source de verification
+      placeholder: https://...
+  - type: textarea
+    id: notes
+    attributes:
+      label: Commentaire
+      description: Tout element qui aide a verifier vite la correction.

@@ -1,0 +1,31 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#081427" />
+  <circle cx="113" cy="108" r="64" fill="#F59E0B" fill-opacity="0.18" />
+  <circle cx="1086" cy="512" r="126" fill="#38BDF8" fill-opacity="0.16" />
+  <circle cx="927" cy="91" r="46" fill="#FB7185" fill-opacity="0.18" />
+  <rect x="72" y="72" width="1056" height="486" rx="40" fill="url(#paint0_linear_2_2)" stroke="#FFFFFF" stroke-opacity="0.10" />
+  <rect x="112" y="120" width="126" height="126" rx="28" fill="#0D1F4A" stroke="#FFFFFF" stroke-opacity="0.12" />
+  <path d="M175 141C140.206 141 112 169.206 112 204C112 251.25 175 288 175 288C175 288 238 251.25 238 204C238 169.206 209.794 141 175 141Z" fill="url(#paint1_linear_2_2)" />
+  <circle cx="175" cy="204" r="24" fill="#ECFEFF" />
+  <text x="274" y="176" fill="#93C5FD" font-size="24" font-family="Arial, Helvetica, sans-serif" letter-spacing="6">GUIDE SOCIAL MARTINIQUE</text>
+  <text x="274" y="246" fill="#F8FAFC" font-size="74" font-weight="700" font-family="Arial, Helvetica, sans-serif">Social972</text>
+  <text x="274" y="304" fill="#CBD5E1" font-size="30" font-family="Arial, Helvetica, sans-serif">Annuaire des structures sociales, sante, famille, handicap, justice</text>
+  <text x="274" y="346" fill="#CBD5E1" font-size="30" font-family="Arial, Helvetica, sans-serif">et insertion en Martinique, avec GPS, favoris et mises a jour.</text>
+  <rect x="112" y="402" width="230" height="58" rx="29" fill="#1D4ED8" />
+  <text x="154" y="439" fill="#F8FAFC" font-size="24" font-weight="700" font-family="Arial, Helvetica, sans-serif">139 structures</text>
+  <rect x="360" y="402" width="196" height="58" rx="29" fill="#0F172A" stroke="#FFFFFF" stroke-opacity="0.12" />
+  <text x="398" y="439" fill="#F8FAFC" font-size="24" font-weight="700" font-family="Arial, Helvetica, sans-serif">34 communes</text>
+  <rect x="574" y="402" width="240" height="58" rx="29" fill="#0F172A" stroke="#FFFFFF" stroke-opacity="0.12" />
+  <text x="614" y="439" fill="#F8FAFC" font-size="24" font-weight="700" font-family="Arial, Helvetica, sans-serif">maj hebdomadaire</text>
+  <text x="112" y="515" fill="#93C5FD" font-size="22" font-family="Arial, Helvetica, sans-serif">github.com/chrisou972/social972</text>
+  <defs>
+    <linearGradient id="paint0_linear_2_2" x1="100" y1="72" x2="1128" y2="558" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D1F4A" stop-opacity="0.96" />
+      <stop offset="1" stop-color="#071223" stop-opacity="0.98" />
+    </linearGradient>
+    <linearGradient id="paint1_linear_2_2" x1="112" y1="141" x2="238" y2="288" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB" />
+      <stop offset="1" stop-color="#38BDF8" />
+    </linearGradient>
+  </defs>
+</svg>

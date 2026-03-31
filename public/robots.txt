@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://chrisou972.github.io/social972/sitemap.xml

@@ -242,11 +242,25 @@
 }
 
 .filter-card,
-.detail-card {
+.detail-card,
+.community-card {
   border-radius: 26px;
   padding: 18px;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
+}
+
+.community-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.community-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
 }
 
 .section-heading {

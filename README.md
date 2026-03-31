@@ -10,6 +10,8 @@ Social972 est une PWA d'annuaire social pour la Martinique. Elle regroupe les st
 - Permet d'enregistrer ses favoris dans le navigateur.
 - Fonctionne comme PWA avec installation possible et cache hors ligne partiel.
 - Ajoute un mini captcha social a l'entree du site.
+- Ajoute des metadonnees SEO, Open Graph, robots.txt, sitemap.xml et image de partage.
+- Permet de proposer une structure ou signaler une correction via des formulaires GitHub pre-remplis.
 - Prevoit une verification hebdomadaire automatique via GitHub Actions.
 
 ## Source des donnees
@@ -59,6 +61,15 @@ Le workflow `.github/workflows/weekly-directory-refresh.yml` relance chaque sema
 2. la synchronisation des donnees officielles
 3. le build de controle
 4. un commit automatique si le dataset a change
+
+## Contribution sans backend
+
+Le site ouvre directement des formulaires GitHub Issues pour:
+
+- proposer une nouvelle structure
+- signaler une correction sur une fiche existante
+
+Les templates sont dans `.github/ISSUE_TEMPLATE/`.
 
 ## Note captcha
 

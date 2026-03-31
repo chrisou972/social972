@@ -26,6 +26,14 @@ import { categoryVisuals } from './data/categoryVisuals'
 import { socialQuiz } from './data/socialQuiz'
 import './App.css'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import {
+  buildCorrectionIssueUrl,
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  NEW_STRUCTURE_ISSUE_URL,
+  REPO_URL,
+  SITE_URL,
+} from './lib/appLinks'
 import { buildDirectionsLinks, formatDateTime, recordMatches } from './lib/directory'
 import type { DirectoryMetadata, DirectoryRecord } from './types'
 
@@ -47,6 +55,25 @@ const fallbackVisual = {
   softAccent: 'rgba(56, 189, 248, 0.16)',
 }
 
+function setMetaByName(name: string, content: string) {
+  const element = document.querySelector(`meta[name="${name}"]`)
+  if (element) {
+    element.setAttribute('content', content)
+  }
+}
+
+function setMetaByProperty(property: string, content: string) {
+  const element = document.querySelector(`meta[property="${property}"]`)
+  if (element) {
+    element.setAttribute('content', content)
+  }
+}
+
+function buildRecordDescription(record: DirectoryRecord) {
+  const contact = record.phoneNumbers[0] ? ` Telephone: ${record.phoneNumbers[0]}.` : ''
+  return `${record.name}. ${record.categoryLabel} en Martinique${record.town ? ` a ${record.town}` : ''}. ${record.summary}.${contact}`
+}
+
 function App() {
   const [theme, setTheme] = useLocalStorage<ThemeMode>('social972-theme', 'night')
   const [favoriteIds, setFavoriteIds] = useLocalStorage<string[]>('social972-favorites', [])
@@ -55,7 +82,10 @@ function App() {
   const [selectedAudience, setSelectedAudience] = useState('all')
   const [selectedTown, setSelectedTown] = useState('all')
   const [favoritesOnly, setFavoritesOnly] = useState(false)
-  const [selectedId, setSelectedId] = useState<string | null>(records[0]?.id ?? null)
+  const [selectedId, setSelectedId] = useState<string | null>(() => {
+    const urlId = new URLSearchParams(window.location.search).get('id')
+    return urlId ?? records[0]?.id ?? null
+  })
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [quizIndex, setQuizIndex] = useState(() => Math.floor(Math.random() * socialQuiz.length))
   const [gateFeedback, setGateFeedback] = useState<string | null>(null)
@@ -86,7 +116,11 @@ function App() {
     })
 
   const activeRecord =
-    records.find((record) => record.id === selectedId) ?? filteredRecords[0] ?? records[0] ?? null
+    filteredRecords.find((record) => record.id === selectedId) ??
+    filteredRecords[0] ??
+    records.find((record) => record.id === selectedId) ??
+    records[0] ??
+    null
   const activeQuiz = socialQuiz[quizIndex]
   const activeVisual = activeRecord ? categoryVisuals[activeRecord.categoryId] ?? fallbackVisual : fallbackVisual
   const directions = activeRecord ? buildDirectionsLinks(activeRecord) : null
@@ -104,6 +138,16 @@ function App() {
   }, [theme])
 
   useEffect(() => {
+    const onPopState = () => {
+      const urlId = new URLSearchParams(window.location.search).get('id')
+      setSelectedId(urlId ?? records[0]?.id ?? null)
+    }
+
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  useEffect(() => {
     const onBeforeInstallPrompt = (event: Event) => {
       event.preventDefault()
       setInstallPrompt(event as BeforeInstallPromptEvent)
@@ -112,6 +156,36 @@ function App() {
     window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt)
     return () => window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt)
   }, [])
+
+  useEffect(() => {
+    const url = new URL(window.location.href)
+
+    if (activeRecord?.id) {
+      url.searchParams.set('id', activeRecord.id)
+    } else {
+      url.searchParams.delete('id')
+    }
+
+    window.history.replaceState({}, '', url)
+  }, [activeRecord])
+
+  const syncSeo = useEffectEvent((record: DirectoryRecord | null) => {
+    const title = record ? `${record.name} | Social972` : DEFAULT_TITLE
+    const description = record ? buildRecordDescription(record) : DEFAULT_DESCRIPTION
+    const pageUrl = record ? `${SITE_URL}?id=${record.id}` : SITE_URL
+
+    document.title = title
+    setMetaByName('description', description)
+    setMetaByName('twitter:title', title)
+    setMetaByName('twitter:description', description)
+    setMetaByProperty('og:title', title)
+    setMetaByProperty('og:description', description)
+    setMetaByProperty('og:url', pageUrl)
+  })
+
+  useEffect(() => {
+    syncSeo(activeRecord)
+  }, [activeRecord])
 
   function toggleFavorite(recordId: string) {
     setFavoriteIds((currentFavorites) => {
@@ -341,6 +415,35 @@ function App() {
                   </button>
                 )
               })}
+            </div>
+          </section>
+
+          <section className="community-card">
+            <p className="eyebrow">Contribuer</p>
+            <h3>Ajouter ou corriger une fiche</h3>
+            <p>
+              Le site reste gratuit et simple a enrichir. Les suggestions ouvrent directement une
+              issue GitHub pre-remplie.
+            </p>
+
+            <div className="community-actions">
+              <a className="ghost-button ghost-button--wide" href={NEW_STRUCTURE_ISSUE_URL} target="_blank" rel="noreferrer">
+                Proposer une structure
+                <ExternalLink size={16} />
+              </a>
+              <a
+                className="ghost-button ghost-button--wide"
+                href={buildCorrectionIssueUrl(activeRecord)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Signaler une correction
+                <ExternalLink size={16} />
+              </a>
+              <a className="ghost-button ghost-button--wide" href={REPO_URL} target="_blank" rel="noreferrer">
+                Voir le depot
+                <ExternalLink size={16} />
+              </a>
             </div>
           </section>
         </aside>
@@ -628,6 +731,16 @@ function App() {
 
                   <a className="secondary-link" href={activeRecord.sourceUrl} target="_blank" rel="noreferrer">
                     Ouvrir la fiche officielle
+                    <ExternalLink size={16} />
+                  </a>
+
+                  <a
+                    className="secondary-link"
+                    href={buildCorrectionIssueUrl(activeRecord)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Signaler une correction
                     <ExternalLink size={16} />
                   </a>
                 </div>

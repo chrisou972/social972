@@ -1,0 +1,73 @@
+name: Proposer une structure
+description: Ajouter une nouvelle structure sociale a l'annuaire Social972
+title: "[Annuaire] Ajouter une structure - "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci. Remplis ce formulaire pour proposer une nouvelle structure a verifier avant integration.
+  - type: input
+    id: structure_name
+    attributes:
+      label: Nom de la structure
+      placeholder: Exemple - France services du Marin
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Categorie principale
+      options:
+        - CCAS / CIAS
+        - France services
+        - Point-justice
+        - Mission locale
+        - France Travail
+        - CAF
+        - CPAM
+        - PMI
+        - MDPH
+        - Cap emploi
+        - Aide aux victimes
+        - Information seniors
+        - Aidants
+        - Droits des femmes
+        - ARS
+        - Autre
+    validations:
+      required: true
+  - type: input
+    id: town
+    attributes:
+      label: Commune
+      placeholder: Exemple - Fort-de-France
+    validations:
+      required: true
+  - type: textarea
+    id: contact_details
+    attributes:
+      label: Coordonnees connues
+      description: Telephone, email, adresse, horaires, site web, GPS si tu les as.
+      placeholder: |
+        Telephone :
+        Email :
+        Adresse :
+        Site :
+        GPS :
+  - type: textarea
+    id: publics
+    attributes:
+      label: Publics concernes
+      description: Exemple - enfants, femmes, handicap, seniors, tout public.
+      placeholder: Decris les publics aides par cette structure.
+  - type: input
+    id: source_url
+    attributes:
+      label: Source officielle
+      description: Lien vers une fiche officielle, un site public ou un annuaire fiable.
+      placeholder: https://...
+  - type: textarea
+    id: notes
+    attributes:
+      label: Commentaire
+      description: Tout contexte utile pour faciliter la verification.
