@@ -1,0 +1,30 @@
+{
+  "name": "Social972 - Annuaire social Martinique",
+  "short_name": "Social972",
+  "description": "Annuaire des structures sociales de Martinique avec recherche, favoris et itineraire GPS.",
+  "lang": "fr-FR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#081427",
+  "theme_color": "#0d1f4a",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

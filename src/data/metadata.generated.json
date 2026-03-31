@@ -1,0 +1,186 @@
+{
+  "generatedAt": "2026-03-31T16:41:18.956Z",
+  "totalRecords": 139,
+  "totalCategories": 16,
+  "totalCommunes": 34,
+  "totalPhones": 167,
+  "totalEmails": 86,
+  "categories": [
+    {
+      "id": "ccas",
+      "label": "CCAS / CIAS",
+      "count": 34,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/ccas"
+    },
+    {
+      "id": "france_services",
+      "label": "France services",
+      "count": 25,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/france_services"
+    },
+    {
+      "id": "point_justice",
+      "label": "Point-justice",
+      "count": 24,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/point_justice"
+    },
+    {
+      "id": "mission_locale",
+      "label": "Mission locale",
+      "count": 19,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/mission_locale"
+    },
+    {
+      "id": "france_travail",
+      "label": "France Travail",
+      "count": 9,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/france_travail"
+    },
+    {
+      "id": "cpam",
+      "label": "CPAM",
+      "count": 9,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/cpam"
+    },
+    {
+      "id": "caf",
+      "label": "CAF",
+      "count": 1,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/caf"
+    },
+    {
+      "id": "pmi",
+      "label": "PMI",
+      "count": 6,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/pmi"
+    },
+    {
+      "id": "pif",
+      "label": "Point info famille",
+      "count": 2,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/pif"
+    },
+    {
+      "id": "mdph",
+      "label": "MDPH",
+      "count": 1,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/maison_handicapees"
+    },
+    {
+      "id": "cap_emploi",
+      "label": "Cap emploi",
+      "count": 1,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/cap_emploi"
+    },
+    {
+      "id": "drdfe",
+      "label": "Droits des femmes",
+      "count": 1,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/dr_femmes"
+    },
+    {
+      "id": "aav",
+      "label": "Aide aux victimes",
+      "count": 3,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/aav"
+    },
+    {
+      "id": "clic",
+      "label": "Information seniors",
+      "count": 2,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/clic"
+    },
+    {
+      "id": "aidants",
+      "label": "Aidants personnes agees",
+      "count": 1,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/accompagnement_personnes_agees"
+    },
+    {
+      "id": "ars",
+      "label": "ARS",
+      "count": 1,
+      "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/ars"
+    }
+  ],
+  "audiences": [
+    {
+      "label": "Adolescents",
+      "count": 2
+    },
+    {
+      "label": "Adultes",
+      "count": 79
+    },
+    {
+      "label": "Aidants",
+      "count": 4
+    },
+    {
+      "label": "Egalite",
+      "count": 1
+    },
+    {
+      "label": "Emploi",
+      "count": 29
+    },
+    {
+      "label": "Enfants",
+      "count": 6
+    },
+    {
+      "label": "Familles",
+      "count": 41
+    },
+    {
+      "label": "Femmes",
+      "count": 28
+    },
+    {
+      "label": "Grossesse",
+      "count": 6
+    },
+    {
+      "label": "Handicap",
+      "count": 3
+    },
+    {
+      "label": "Insertion",
+      "count": 19
+    },
+    {
+      "label": "Jeunes",
+      "count": 19
+    },
+    {
+      "label": "Parents",
+      "count": 9
+    },
+    {
+      "label": "Reconversion",
+      "count": 9
+    },
+    {
+      "label": "Sante",
+      "count": 10
+    },
+    {
+      "label": "Seniors",
+      "count": 28
+    },
+    {
+      "label": "Tout public",
+      "count": 96
+    },
+    {
+      "label": "Victimes",
+      "count": 28
+    }
+  ],
+  "coverage": {
+    "coordinates": 139,
+    "phones": 124,
+    "emails": 85
+  },
+  "failures": []
+}
