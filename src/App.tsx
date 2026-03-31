@@ -18,6 +18,7 @@ import {
   useDeferredValue,
   useEffect,
   useEffectEvent,
+  useMemo,
   useState,
 } from 'react'
 import directoryMetadata from './data/metadata.generated.json'
@@ -49,6 +50,7 @@ type BeforeInstallPromptEvent = Event & {
 
 const records = directoryRecords as DirectoryRecord[]
 const metadata = directoryMetadata as DirectoryMetadata
+const featuredCategoryIds = ['aide_alimentaire', 'logement', 'ctm', 'croix_rouge']
 const fallbackVisual = {
   icon: HeartHandshake,
   accent: '#38bdf8',
@@ -95,8 +97,16 @@ function App() {
 
   const deferredQuery = useDeferredValue(query)
   const favoriteSet = new Set(favoriteIds)
-  const towns = [...new Set(records.map((record) => record.town).filter(Boolean))].sort((left, right) =>
-    left.localeCompare(right, 'fr'),
+  const towns = useMemo(
+    () =>
+      [...new Set(records.map((record) => record.town).filter(Boolean))].sort((left, right) =>
+        left.localeCompare(right, 'fr'),
+      ),
+    [],
+  )
+  const categoryLookup = useMemo(
+    () => new Map(metadata.categories.map((category) => [category.id, category])),
+    [],
   )
 
   const filteredRecords = records
@@ -123,8 +133,20 @@ function App() {
     null
   const activeQuiz = socialQuiz[quizIndex]
   const activeVisual = activeRecord ? categoryVisuals[activeRecord.categoryId] ?? fallbackVisual : fallbackVisual
+  const ActiveVisualIcon = activeVisual.icon
   const directions = activeRecord ? buildDirectionsLinks(activeRecord) : null
   const visibleFavorites = filteredRecords.filter((record) => favoriteSet.has(record.id)).length
+  const selectedCategoryMeta = selectedCategory === 'all' ? null : categoryLookup.get(selectedCategory) ?? null
+  const featuredCategories = featuredCategoryIds
+    .map((categoryId) => categoryLookup.get(categoryId))
+    .filter((category): category is NonNullable<typeof category> => category !== undefined)
+  const activeFilters = [
+    selectedCategoryMeta?.label ?? null,
+    selectedAudience !== 'all' ? selectedAudience : null,
+    selectedTown !== 'all' ? selectedTown : null,
+    favoritesOnly ? 'Favoris' : null,
+    query ? `Recherche: ${query}` : null,
+  ].filter((value): value is string => Boolean(value))
 
   const applyTheme = useEffectEvent((nextTheme: ThemeMode) => {
     document.documentElement.dataset.theme = nextTheme
@@ -255,142 +277,118 @@ function App() {
             <p className="eyebrow">Guide social Martinique</p>
             <h1>Social972</h1>
             <p className="brand-copy">
-              Un annuaire PWA pense pour trouver rapidement les structures sociales, les contacter,
-              garder ses favoris et partir vers elles avec le GPS.
+              Un annuaire PWA plus epure pour trouver vite une structure, filtrer par besoin,
+              garder ses favoris et partir avec le GPS.
             </p>
           </div>
         </div>
 
-        <div className="header-actions">
-          <span className="meta-pill">
-            <ShieldCheck size={16} />
-            Source officielle
-          </span>
-          <span className="meta-pill">
-            <RefreshCcw size={16} />
-            Maj hebdo
-          </span>
-          {installPrompt ? (
-            <button className="ghost-button" type="button" onClick={installApp}>
-              <Download size={16} />
-              Installer
+        <div className="header-side">
+          <div className="header-note">
+            <p className="eyebrow">Edition 2026</p>
+            <h2>Recherche plus claire, nouveaux parcours essentiels.</h2>
+            <p className="brand-copy">
+              L annuaire met maintenant en avant la Croix-Rouge, l aide alimentaire, le logement
+              social et les dispositifs CTM, avec une lecture plus nette sur ordinateur.
+            </p>
+          </div>
+
+          <div className="header-actions">
+            <span className="meta-pill">
+              <ShieldCheck size={16} />
+              Source officielle
+            </span>
+            <span className="meta-pill">
+              <RefreshCcw size={16} />
+              Maj hebdo
+            </span>
+            {installPrompt ? (
+              <button className="ghost-button" type="button" onClick={installApp}>
+                <Download size={16} />
+                Installer
+              </button>
+            ) : null}
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={() => setTheme(theme === 'night' ? 'day' : 'night')}
+            >
+              {theme === 'night' ? <SunMedium size={16} /> : <MoonStar size={16} />}
+              {theme === 'night' ? 'Mode jour' : 'Mode nuit'}
             </button>
-          ) : null}
-          <button
-            className="theme-toggle"
-            type="button"
-            onClick={() => setTheme(theme === 'night' ? 'day' : 'night')}
-          >
-            {theme === 'night' ? <SunMedium size={16} /> : <MoonStar size={16} />}
-            {theme === 'night' ? 'Mode jour' : 'Mode nuit'}
-          </button>
+          </div>
         </div>
       </header>
 
       <main className={`workspace ${gateUnlocked ? '' : 'workspace--locked'}`}>
-        <aside className="sidebar">
-          <section className="hero-card">
-            <p className="eyebrow">Carte d entree</p>
-            <h2>{metadata.totalRecords} structures utiles</h2>
-            <p>
-              {metadata.totalCommunes} communes couvertes, avec fiches officielles, favoris locaux
-              et acces hors ligne partiel.
-            </p>
+        <section className="dashboard-grid">
+          <section className="overview-panel">
+            <div className="overview-copy">
+              <p className="eyebrow">Vue d ensemble</p>
+              <h2>{filteredRecords.length} resultat(s) utiles</h2>
+              <p className="panel-copy">
+                Recherche rapide par structure, public, commune ou contact. La disposition met
+                l accent sur les parcours les plus recherches et laisse le detail respirer.
+              </p>
+            </div>
 
-            <div className="stat-grid">
+            <div className="stats-row">
               <article className="stat-card">
-                <strong>{metadata.coverage.coordinates}</strong>
-                <span>GPS disponibles</span>
+                <strong>{metadata.totalRecords}</strong>
+                <span>fiches utiles</span>
               </article>
               <article className="stat-card">
-                <strong>{metadata.coverage.emails}</strong>
-                <span>Emails trouves</span>
+                <strong>{metadata.coverage.coordinates}</strong>
+                <span>acces GPS</span>
               </article>
               <article className="stat-card">
                 <strong>{favoriteIds.length}</strong>
-                <span>Favoris locaux</span>
+                <span>favoris locaux</span>
               </article>
               <article className="stat-card">
                 <strong>{metadata.totalCategories}</strong>
-                <span>Familles de structures</span>
+                <span>familles de structures</span>
               </article>
             </div>
           </section>
 
-          <section className="filter-card">
+          <section className="filter-panel">
             <div className="section-heading">
-              <span>Publics</span>
-              <small>{metadata.audiences.length}</small>
+              <span>Acces rapides</span>
+              <small>Parcours prioritaires</small>
             </div>
-            <div className="chip-grid">
-              <button
-                type="button"
-                className={`chip ${selectedAudience === 'all' ? 'is-active' : ''}`}
-                onClick={() => setAudience('all')}
-              >
-                Tous
+
+            <div className="filter-top-row">
+              <label className="search-field">
+                <Search size={18} />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Rechercher un service, une commune, un public ou un contact"
+                />
+              </label>
+
+              <button className="ghost-button" type="button" onClick={resetFilters}>
+                <RefreshCcw size={16} />
+                Reinitialiser
               </button>
-              {metadata.audiences.map((audience) => (
-                <button
-                  key={audience.label}
-                  type="button"
-                  className={`chip ${selectedAudience === audience.label ? 'is-active' : ''}`}
-                  onClick={() => setAudience(audience.label)}
-                >
-                  {audience.label}
-                  <span>{audience.count}</span>
-                </button>
-              ))}
             </div>
-          </section>
 
-          <section className="filter-card">
-            <div className="section-heading">
-              <span>Commune</span>
-              <small>{towns.length}</small>
-            </div>
-            <label className="select-field">
-              <span>Filtrer par zone</span>
-              <select value={selectedTown} onChange={(event) => setSelectedTown(event.target.value)}>
-                <option value="all">Toute la Martinique</option>
-                {towns.map((town) => (
-                  <option key={town} value={town}>
-                    {town}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <button
-              type="button"
-              className={`ghost-button ghost-button--wide ${favoritesOnly ? 'is-active' : ''}`}
-              onClick={() => setFavoritesOnly((current) => !current)}
-            >
-              <Star size={16} />
-              Favoris seulement
-              <span>{visibleFavorites}</span>
-            </button>
-          </section>
-
-          <section className="filter-card">
-            <div className="section-heading">
-              <span>Categories</span>
-              <small>{metadata.categories.length}</small>
-            </div>
-            <div className="category-list">
+            <div className="featured-grid">
               <button
                 type="button"
-                className={`category-button ${selectedCategory === 'all' ? 'is-active' : ''}`}
+                className={`featured-card ${selectedCategory === 'all' ? 'is-active' : ''}`}
                 onClick={() => setCategory('all')}
               >
-                <span className="category-copy">
+                <span className="featured-copy">
                   <strong>Tout l annuaire</strong>
-                  <small>Toutes les structures synchronisees</small>
+                  <small>{metadata.totalRecords} fiches officielles</small>
                 </span>
-                <span className="category-count">{metadata.totalRecords}</span>
+                <span className="featured-count">{metadata.totalRecords}</span>
               </button>
 
-              {metadata.categories.map((category) => {
+              {featuredCategories.map((category) => {
                 const visual = categoryVisuals[category.id] ?? fallbackVisual
                 const Icon = visual.icon
 
@@ -398,362 +396,394 @@ function App() {
                   <button
                     key={category.id}
                     type="button"
-                    className={`category-button ${selectedCategory === category.id ? 'is-active' : ''}`}
+                    className={`featured-card ${selectedCategory === category.id ? 'is-active' : ''}`}
                     onClick={() => setCategory(category.id)}
                   >
                     <span
-                      className="category-icon"
+                      className="featured-icon"
                       style={{ backgroundColor: visual.softAccent, color: visual.accent }}
                     >
-                      <Icon size={16} />
+                      <Icon size={18} />
                     </span>
-                    <span className="category-copy">
+                    <span className="featured-copy">
                       <strong>{category.label}</strong>
-                      <small>{records.find((record) => record.categoryId === category.id)?.summary}</small>
+                      <small>{category.count} fiches officielles</small>
                     </span>
-                    <span className="category-count">{category.count}</span>
+                    <span className="featured-count">{category.count}</span>
                   </button>
                 )
               })}
             </div>
-          </section>
 
-          <section className="community-card">
-            <p className="eyebrow">Contribuer</p>
-            <h3>Ajouter ou corriger une fiche</h3>
-            <p>
-              Le site reste gratuit et simple a enrichir. Les suggestions ouvrent directement une
-              issue GitHub pre-remplie.
-            </p>
+            <div className="filter-grid">
+              <label className="select-field">
+                <span>Public</span>
+                <select value={selectedAudience} onChange={(event) => setAudience(event.target.value)}>
+                  <option value="all">Tous les publics</option>
+                  {metadata.audiences.map((audience) => (
+                    <option key={audience.label} value={audience.label}>
+                      {audience.label} ({audience.count})
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-            <div className="community-actions">
-              <a className="ghost-button ghost-button--wide" href={NEW_STRUCTURE_ISSUE_URL} target="_blank" rel="noreferrer">
-                Proposer une structure
-                <ExternalLink size={16} />
-              </a>
-              <a
-                className="ghost-button ghost-button--wide"
-                href={buildCorrectionIssueUrl(activeRecord)}
-                target="_blank"
-                rel="noreferrer"
+              <label className="select-field">
+                <span>Commune</span>
+                <select value={selectedTown} onChange={(event) => setSelectedTown(event.target.value)}>
+                  <option value="all">Toute la Martinique</option>
+                  {towns.map((town) => (
+                    <option key={town} value={town}>
+                      {town}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="select-field">
+                <span>Categorie</span>
+                <select value={selectedCategory} onChange={(event) => setCategory(event.target.value)}>
+                  <option value="all">Toutes les categories</option>
+                  {metadata.categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.label} ({category.count})
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <button
+                type="button"
+                className={`ghost-button ghost-button--wide filter-toggle ${
+                  favoritesOnly ? 'is-active' : ''
+                }`}
+                onClick={() => setFavoritesOnly((current) => !current)}
               >
-                Signaler une correction
-                <ExternalLink size={16} />
-              </a>
-              <a className="ghost-button ghost-button--wide" href={REPO_URL} target="_blank" rel="noreferrer">
-                Voir le depot
-                <ExternalLink size={16} />
-              </a>
+                <Star size={16} />
+                Favoris seulement
+                <span>{visibleFavorites}</span>
+              </button>
+            </div>
+
+            <div className="active-filters">
+              {activeFilters.length > 0 ? (
+                activeFilters.map((filter) => (
+                  <span key={filter} className="filter-token">
+                    {filter}
+                  </span>
+                ))
+              ) : (
+                <span className="filter-token">Aucun filtre actif</span>
+              )}
             </div>
           </section>
-        </aside>
 
-        <section className="list-panel">
-          <div className="panel-head">
-            <div>
-              <p className="eyebrow">Annuaire vivant</p>
-              <h2>{filteredRecords.length} resultat(s)</h2>
-              <p className="panel-copy">
-                Derniere synchronisation officielle le {formatDateTime(metadata.generatedAt)}.
-              </p>
-            </div>
-            <button className="ghost-button" type="button" onClick={resetFilters}>
-              <RefreshCcw size={16} />
-              Reinitialiser
-            </button>
-          </div>
+          <section className="content-grid">
+            <section className="list-panel">
+              <div className="panel-head">
+                <div>
+                  <p className="eyebrow">Resultats</p>
+                  <h2>{filteredRecords.length} fiche(s)</h2>
+                  <p className="panel-copy">
+                    {selectedCategoryMeta
+                      ? `${selectedCategoryMeta.label} · mise a jour ${formatDateTime(metadata.generatedAt)}`
+                      : `Annuaire complet · mise a jour ${formatDateTime(metadata.generatedAt)}`}
+                  </p>
+                </div>
 
-          <div className="search-row">
-            <label className="search-field">
-              <Search size={18} />
-              <input
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Rechercher un service, une commune, un public ou un contact"
-              />
-            </label>
-            <button
-              type="button"
-              className={`ghost-button ${favoritesOnly ? 'is-active' : ''}`}
-              onClick={() => setFavoritesOnly((current) => !current)}
-            >
-              <Star size={16} />
-              {favoritesOnly ? 'Tous' : 'Favoris'}
-            </button>
-          </div>
+                <span className="meta-pill">
+                  <ShieldCheck size={16} />
+                  {metadata.totalCommunes} communes
+                </span>
+              </div>
 
-          <div className="active-filters">
-            {selectedCategory !== 'all' ? <span className="filter-token">{selectedCategory}</span> : null}
-            {selectedAudience !== 'all' ? <span className="filter-token">{selectedAudience}</span> : null}
-            {selectedTown !== 'all' ? <span className="filter-token">{selectedTown}</span> : null}
-            {favoritesOnly ? <span className="filter-token">Favoris</span> : null}
-            {query ? <span className="filter-token">Recherche: {query}</span> : null}
-          </div>
+              <div className="results-list">
+                {filteredRecords.length === 0 ? (
+                  <article className="empty-state">
+                    <HeartHandshake size={28} />
+                    <h3>Aucun resultat pour ces filtres</h3>
+                    <p>Essaie une autre commune, un autre public ou retire le filtre favoris.</p>
+                  </article>
+                ) : (
+                  filteredRecords.map((record) => {
+                    const visual = categoryVisuals[record.categoryId] ?? fallbackVisual
+                    const Icon = visual.icon
+                    const isFavorite = favoriteSet.has(record.id)
+                    const isActive = activeRecord?.id === record.id
 
-          <div className="results-list">
-            {filteredRecords.length === 0 ? (
-              <article className="empty-state">
-                <HeartHandshake size={28} />
-                <h3>Aucun resultat pour ces filtres</h3>
-                <p>Essaie une autre commune, un autre public ou retire le filtre favoris.</p>
-              </article>
-            ) : (
-              filteredRecords.map((record) => {
-                const visual = categoryVisuals[record.categoryId] ?? fallbackVisual
-                const Icon = visual.icon
-                const isFavorite = favoriteSet.has(record.id)
-                const isActive = activeRecord?.id === record.id
+                    return (
+                      <article
+                        key={record.id}
+                        className={`result-card ${isActive ? 'is-active' : ''}`}
+                        onClick={() => setSelectedId(record.id)}
+                        style={
+                          {
+                            '--card-accent': visual.accent,
+                            '--card-soft-accent': visual.softAccent,
+                          } as CSSProperties
+                        }
+                      >
+                        <div className="result-main">
+                          <span className="result-icon">
+                            <Icon size={18} />
+                          </span>
+                          <div>
+                            <p className="result-category">{record.categoryLabel}</p>
+                            <h3>{record.name}</h3>
+                            <p className="result-subtitle">{record.summary}</p>
+                            <div className="result-meta">
+                              <span>{record.town || 'Martinique'}</span>
+                              {record.phoneNumbers[0] ? <span>{record.phoneNumbers[0]}</span> : null}
+                              {record.emails[0] ? <span>{record.emails[0]}</span> : null}
+                            </div>
+                            <div className="badge-row">
+                              {record.audiences.slice(0, 3).map((audience) => (
+                                <span key={audience} className="badge">
+                                  {audience}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
 
-                return (
-                  <article
-                    key={record.id}
-                    className={`result-card ${isActive ? 'is-active' : ''}`}
-                    onClick={() => setSelectedId(record.id)}
+                        <button
+                          type="button"
+                          className={`favorite-button ${isFavorite ? 'is-favorite' : ''}`}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            toggleFavorite(record.id)
+                          }}
+                        >
+                          <Star size={18} fill={isFavorite ? 'currentColor' : 'none'} />
+                        </button>
+                      </article>
+                    )
+                  })
+                )}
+              </div>
+            </section>
+
+            <aside className="detail-panel">
+              {activeRecord ? (
+                <>
+                  <section
+                    className="detail-hero"
                     style={
                       {
-                        '--card-accent': visual.accent,
-                        '--card-soft-accent': visual.softAccent,
+                        '--detail-accent': activeVisual.accent,
+                        '--detail-soft-accent': activeVisual.softAccent,
                       } as CSSProperties
                     }
                   >
-                    <div className="result-main">
-                      <span className="result-icon">
-                        <Icon size={18} />
+                    <div className="detail-header-row">
+                      <span className="detail-icon">
+                        <ActiveVisualIcon size={20} />
                       </span>
-                      <div>
-                        <p className="result-category">{record.categoryLabel}</p>
-                        <h3>{record.name}</h3>
-                        <p className="result-subtitle">{record.summary}</p>
-                        <div className="result-meta">
-                          <span>{record.town || 'Martinique'}</span>
-                          {record.phoneNumbers[0] ? <span>{record.phoneNumbers[0]}</span> : null}
-                          {record.emails[0] ? <span>{record.emails[0]}</span> : null}
-                        </div>
-                        <div className="badge-row">
-                          {record.audiences.slice(0, 3).map((audience) => (
-                            <span key={audience} className="badge">
-                              {audience}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                      <button
+                        type="button"
+                        className={`favorite-button favorite-button--detail ${
+                          favoriteSet.has(activeRecord.id) ? 'is-favorite' : ''
+                        }`}
+                        onClick={() => toggleFavorite(activeRecord.id)}
+                      >
+                        <Star size={18} fill={favoriteSet.has(activeRecord.id) ? 'currentColor' : 'none'} />
+                        {favoriteSet.has(activeRecord.id) ? 'Favori' : 'Ajouter'}
+                      </button>
                     </div>
 
-                    <button
-                      type="button"
-                      className={`favorite-button ${isFavorite ? 'is-favorite' : ''}`}
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        toggleFavorite(record.id)
-                      }}
-                    >
-                      <Star size={18} fill={isFavorite ? 'currentColor' : 'none'} />
-                    </button>
-                  </article>
-                )
-              })
-            )}
-          </div>
+                    <p className="eyebrow">{activeRecord.categoryLabel}</p>
+                    <h2>{activeRecord.name}</h2>
+                    <p className="detail-copy">
+                      {activeRecord.description || activeRecord.summary || activeRecord.serviceType}
+                    </p>
+
+                    <div className="badge-row">
+                      {activeRecord.audiences.map((audience) => (
+                        <span key={audience} className="badge">
+                          {audience}
+                        </span>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="detail-actions">
+                    {activeRecord.phoneNumbers[0] ? (
+                      <a className="primary-action" href={`tel:${activeRecord.phoneNumbers[0]}`}>
+                        <Phone size={18} />
+                        Appeler
+                      </a>
+                    ) : null}
+                    {activeRecord.emails[0] ? (
+                      <a className="primary-action" href={`mailto:${activeRecord.emails[0]}`}>
+                        <Mail size={18} />
+                        Ecrire
+                      </a>
+                    ) : null}
+                    {directions ? (
+                      <a className="primary-action" href={directions.google} target="_blank" rel="noreferrer">
+                        <MapPinned size={18} />
+                        Itineraire
+                      </a>
+                    ) : null}
+                  </section>
+
+                  <section className="detail-card">
+                    <div className="section-heading">
+                      <span>Coordonnees</span>
+                      <small>{activeRecord.serviceType}</small>
+                    </div>
+
+                    <div className="info-stack">
+                      <div className="info-line">
+                        <MapPinned size={16} />
+                        <div>
+                          <strong>Adresse</strong>
+                          <p>{activeRecord.address || 'Adresse non communiquee'}</p>
+                        </div>
+                      </div>
+
+                      {activeRecord.phoneNumbers.map((phone) => (
+                        <a key={phone} className="info-line info-line--link" href={`tel:${phone}`}>
+                          <Phone size={16} />
+                          <div>
+                            <strong>Telephone</strong>
+                            <p>{phone}</p>
+                          </div>
+                        </a>
+                      ))}
+
+                      {activeRecord.emails.map((email) => (
+                        <a key={email} className="info-line info-line--link" href={`mailto:${email}`}>
+                          <Mail size={16} />
+                          <div>
+                            <strong>Email</strong>
+                            <p>{email}</p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="detail-card">
+                    <div className="section-heading">
+                      <span>Se rendre sur place</span>
+                      <small>{activeRecord.town}</small>
+                    </div>
+
+                    <div className="action-grid">
+                      {directions ? (
+                        <>
+                          <a href={directions.google} target="_blank" rel="noreferrer">
+                            Google Maps
+                          </a>
+                          <a href={directions.osm} target="_blank" rel="noreferrer">
+                            OpenStreetMap
+                          </a>
+                          <a href={directions.apple} target="_blank" rel="noreferrer">
+                            Apple Plans
+                          </a>
+                        </>
+                      ) : (
+                        <p className="muted-copy">Aucune coordonnee GPS disponible pour cette fiche.</p>
+                      )}
+                    </div>
+
+                    {activeRecord.coordinates ? (
+                      <p className="gps-copy">
+                        GPS: {activeRecord.coordinates.latitude.toFixed(6)},{' '}
+                        {activeRecord.coordinates.longitude.toFixed(6)}
+                      </p>
+                    ) : null}
+                  </section>
+
+                  <section className="detail-card">
+                    <div className="section-heading">
+                      <span>Horaires et infos</span>
+                      <small>{activeRecord.tags.join(' · ')}</small>
+                    </div>
+
+                    {activeRecord.hours.length > 0 ? (
+                      <ul className="hours-list">
+                        {activeRecord.hours.map((hour) => (
+                          <li key={hour}>{hour}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="muted-copy">Horaires non disponibles dans la source officielle.</p>
+                    )}
+
+                    {activeRecord.website ? (
+                      <a className="secondary-link" href={activeRecord.website} target="_blank" rel="noreferrer">
+                        Voir le site internet
+                        <ExternalLink size={16} />
+                      </a>
+                    ) : null}
+                  </section>
+
+                  <section className="detail-card">
+                    <div className="section-heading">
+                      <span>Source et fiabilite</span>
+                      <small>{activeRecord.sourceName}</small>
+                    </div>
+
+                    <div className="info-stack">
+                      <div className="info-line">
+                        <ShieldCheck size={16} />
+                        <div>
+                          <strong>Derniere verification</strong>
+                          <p>{formatDateTime(activeRecord.lastVerifiedAt)}</p>
+                        </div>
+                      </div>
+
+                      <a className="secondary-link" href={activeRecord.sourceUrl} target="_blank" rel="noreferrer">
+                        Ouvrir la fiche officielle
+                        <ExternalLink size={16} />
+                      </a>
+
+                      <a
+                        className="secondary-link"
+                        href={buildCorrectionIssueUrl(activeRecord)}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Signaler une correction
+                        <ExternalLink size={16} />
+                      </a>
+                    </div>
+                  </section>
+
+                  <section className="detail-card community-card community-card--compact">
+                    <div className="section-heading">
+                      <span>Contribuer</span>
+                      <small>Simple et gratuit</small>
+                    </div>
+                    <p className="panel-copy">
+                      Les suggestions ouvrent directement une issue GitHub pre-remplie pour garder
+                      les donnees a jour.
+                    </p>
+
+                    <div className="community-actions">
+                      <a className="ghost-button ghost-button--wide" href={NEW_STRUCTURE_ISSUE_URL} target="_blank" rel="noreferrer">
+                        Proposer une structure
+                        <ExternalLink size={16} />
+                      </a>
+                      <a className="ghost-button ghost-button--wide" href={REPO_URL} target="_blank" rel="noreferrer">
+                        Voir le depot
+                        <ExternalLink size={16} />
+                      </a>
+                    </div>
+                  </section>
+                </>
+              ) : (
+                <section className="empty-state">
+                  <HeartHandshake size={28} />
+                  <h3>Aucune fiche selectionnee</h3>
+                  <p>Choisis une structure pour afficher son detail.</p>
+                </section>
+              )}
+            </aside>
+          </section>
         </section>
-
-        <aside className="detail-panel">
-          {activeRecord ? (
-            <>
-              <section
-                className="detail-hero"
-                style={
-                  {
-                    '--detail-accent': activeVisual.accent,
-                    '--detail-soft-accent': activeVisual.softAccent,
-                  } as CSSProperties
-                }
-              >
-                <div className="detail-header-row">
-                  <span className="detail-icon">
-                    <activeVisual.icon size={20} />
-                  </span>
-                  <button
-                    type="button"
-                    className={`favorite-button favorite-button--detail ${
-                      favoriteSet.has(activeRecord.id) ? 'is-favorite' : ''
-                    }`}
-                    onClick={() => toggleFavorite(activeRecord.id)}
-                  >
-                    <Star size={18} fill={favoriteSet.has(activeRecord.id) ? 'currentColor' : 'none'} />
-                    {favoriteSet.has(activeRecord.id) ? 'Favori' : 'Ajouter'}
-                  </button>
-                </div>
-
-                <p className="eyebrow">{activeRecord.categoryLabel}</p>
-                <h2>{activeRecord.name}</h2>
-                <p className="detail-copy">
-                  {activeRecord.description || activeRecord.summary || activeRecord.serviceType}
-                </p>
-
-                <div className="badge-row">
-                  {activeRecord.audiences.map((audience) => (
-                    <span key={audience} className="badge">
-                      {audience}
-                    </span>
-                  ))}
-                </div>
-              </section>
-
-              <section className="detail-actions">
-                {activeRecord.phoneNumbers[0] ? (
-                  <a className="primary-action" href={`tel:${activeRecord.phoneNumbers[0]}`}>
-                    <Phone size={18} />
-                    Appeler
-                  </a>
-                ) : null}
-                {activeRecord.emails[0] ? (
-                  <a className="primary-action" href={`mailto:${activeRecord.emails[0]}`}>
-                    <Mail size={18} />
-                    Ecrire
-                  </a>
-                ) : null}
-                {directions ? (
-                  <a className="primary-action" href={directions.google} target="_blank" rel="noreferrer">
-                    <MapPinned size={18} />
-                    Itineraire
-                  </a>
-                ) : null}
-              </section>
-
-              <section className="detail-card">
-                <div className="section-heading">
-                  <span>Coordonnees</span>
-                  <small>{activeRecord.serviceType}</small>
-                </div>
-
-                <div className="info-stack">
-                  <div className="info-line">
-                    <MapPinned size={16} />
-                    <div>
-                      <strong>Adresse</strong>
-                      <p>{activeRecord.address || 'Adresse non communiquee'}</p>
-                    </div>
-                  </div>
-
-                  {activeRecord.phoneNumbers.map((phone) => (
-                    <a key={phone} className="info-line info-line--link" href={`tel:${phone}`}>
-                      <Phone size={16} />
-                      <div>
-                        <strong>Telephone</strong>
-                        <p>{phone}</p>
-                      </div>
-                    </a>
-                  ))}
-
-                  {activeRecord.emails.map((email) => (
-                    <a key={email} className="info-line info-line--link" href={`mailto:${email}`}>
-                      <Mail size={16} />
-                      <div>
-                        <strong>Email</strong>
-                        <p>{email}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </section>
-
-              <section className="detail-card">
-                <div className="section-heading">
-                  <span>Se rendre sur place</span>
-                  <small>{activeRecord.town}</small>
-                </div>
-
-                <div className="action-grid">
-                  {directions ? (
-                    <>
-                      <a href={directions.google} target="_blank" rel="noreferrer">
-                        Google Maps
-                      </a>
-                      <a href={directions.osm} target="_blank" rel="noreferrer">
-                        OpenStreetMap
-                      </a>
-                      <a href={directions.apple} target="_blank" rel="noreferrer">
-                        Apple Plans
-                      </a>
-                    </>
-                  ) : (
-                    <p className="muted-copy">Aucune coordonnee GPS disponible pour cette fiche.</p>
-                  )}
-                </div>
-
-                {activeRecord.coordinates ? (
-                  <p className="gps-copy">
-                    GPS: {activeRecord.coordinates.latitude.toFixed(6)},{' '}
-                    {activeRecord.coordinates.longitude.toFixed(6)}
-                  </p>
-                ) : null}
-              </section>
-
-              <section className="detail-card">
-                <div className="section-heading">
-                  <span>Horaires et infos</span>
-                  <small>{activeRecord.tags.join(' · ')}</small>
-                </div>
-
-                {activeRecord.hours.length > 0 ? (
-                  <ul className="hours-list">
-                    {activeRecord.hours.map((hour) => (
-                      <li key={hour}>{hour}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="muted-copy">Horaires non disponibles dans la source officielle.</p>
-                )}
-
-                {activeRecord.website ? (
-                  <a className="secondary-link" href={activeRecord.website} target="_blank" rel="noreferrer">
-                    Voir le site internet
-                    <ExternalLink size={16} />
-                  </a>
-                ) : null}
-              </section>
-
-              <section className="detail-card">
-                <div className="section-heading">
-                  <span>Source et fiabilite</span>
-                  <small>Controle hebdomadaire</small>
-                </div>
-
-                <div className="info-stack">
-                  <div className="info-line">
-                    <ShieldCheck size={16} />
-                    <div>
-                      <strong>Derniere verification</strong>
-                      <p>{formatDateTime(activeRecord.lastVerifiedAt)}</p>
-                    </div>
-                  </div>
-
-                  <a className="secondary-link" href={activeRecord.sourceUrl} target="_blank" rel="noreferrer">
-                    Ouvrir la fiche officielle
-                    <ExternalLink size={16} />
-                  </a>
-
-                  <a
-                    className="secondary-link"
-                    href={buildCorrectionIssueUrl(activeRecord)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Signaler une correction
-                    <ExternalLink size={16} />
-                  </a>
-                </div>
-              </section>
-            </>
-          ) : (
-            <section className="empty-state">
-              <HeartHandshake size={28} />
-              <h3>Aucune fiche selectionnee</h3>
-              <p>Choisis une structure a gauche pour afficher son detail.</p>
-            </section>
-          )}
-        </aside>
       </main>
 
       {!gateUnlocked ? (

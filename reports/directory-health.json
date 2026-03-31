@@ -1,11 +1,35 @@
 {
-  "generatedAt": "2026-03-31T16:41:18.956Z",
-  "totalRecords": 139,
-  "totalCategories": 16,
+  "generatedAt": "2026-03-31T18:53:24.982Z",
+  "totalRecords": 173,
+  "totalCategories": 20,
   "totalCommunes": 34,
-  "totalPhones": 167,
-  "totalEmails": 86,
+  "totalPhones": 218,
+  "totalEmails": 121,
   "categories": [
+    {
+      "id": "aide_alimentaire",
+      "label": "Aide alimentaire",
+      "count": 17,
+      "url": "https://martinique.deets.gouv.fr/sites/martinique.deets.gouv.fr/IMG/pdf/liste_associations_habilitees_a_l_aide_alimentaire_2022_2_.pdf"
+    },
+    {
+      "id": "logement",
+      "label": "Logement / hebergement",
+      "count": 4,
+      "url": "https://www.actionlogement.fr/fort-de-france"
+    },
+    {
+      "id": "ctm",
+      "label": "Dispositifs CTM",
+      "count": 6,
+      "url": "https://www.collectivitedemartinique.mq/aides-et-demarches/"
+    },
+    {
+      "id": "croix_rouge",
+      "label": "Croix-Rouge Martinique",
+      "count": 7,
+      "url": "https://www.croix-rouge.fr/delegation-territoriale-de-la-martinique"
+    },
     {
       "id": "ccas",
       "label": "CCAS / CIAS",
@@ -105,16 +129,24 @@
   ],
   "audiences": [
     {
+      "label": "Addictologie",
+      "count": 1
+    },
+    {
       "label": "Adolescents",
       "count": 2
     },
     {
       "label": "Adultes",
-      "count": 79
+      "count": 87
     },
     {
       "label": "Aidants",
-      "count": 4
+      "count": 9
+    },
+    {
+      "label": "Associations",
+      "count": 1
     },
     {
       "label": "Egalite",
@@ -130,11 +162,11 @@
     },
     {
       "label": "Familles",
-      "count": 41
+      "count": 74
     },
     {
       "label": "Femmes",
-      "count": 28
+      "count": 29
     },
     {
       "label": "Grossesse",
@@ -142,7 +174,7 @@
     },
     {
       "label": "Handicap",
-      "count": 3
+      "count": 10
     },
     {
       "label": "Insertion",
@@ -150,27 +182,35 @@
     },
     {
       "label": "Jeunes",
-      "count": 19
+      "count": 22
     },
     {
       "label": "Parents",
-      "count": 9
+      "count": 10
     },
     {
       "label": "Reconversion",
       "count": 9
     },
     {
+      "label": "Salaries",
+      "count": 1
+    },
+    {
       "label": "Sante",
-      "count": 10
+      "count": 11
     },
     {
       "label": "Seniors",
-      "count": 28
+      "count": 36
     },
     {
       "label": "Tout public",
-      "count": 96
+      "count": 126
+    },
+    {
+      "label": "Urgence sociale",
+      "count": 28
     },
     {
       "label": "Victimes",
@@ -178,9 +218,9 @@
     }
   ],
   "coverage": {
-    "coordinates": 139,
-    "phones": 124,
-    "emails": 85
+    "coordinates": 148,
+    "phones": 158,
+    "emails": 104
   },
   "failures": []
 }

@@ -12,12 +12,19 @@ const recordsPath = path.join(dataDir, 'structures.generated.json')
 const metadataPath = path.join(dataDir, 'metadata.generated.json')
 const reportJsonPath = path.join(reportsDir, 'directory-health.json')
 const reportMarkdownPath = path.join(reportsDir, 'directory-health.md')
+const manualRecordsSourcePath = path.join(__dirname, 'manual-structures.json')
+const geocodeCachePath = path.join(__dirname, 'geocode-cache.json')
 
 const isCheckOnly = process.argv.includes('--check')
 
 const fetchHeaders = {
   'accept-language': 'fr-FR,fr;q=0.9',
-  'user-agent': 'Social972 data sync bot/1.0 (+https://github.com/chrisou972/social972)',
+  'user-agent': 'Social972 data sync bot/1.1 (+https://github.com/chrisou972/social972)',
+}
+
+const geocodeHeaders = {
+  ...fetchHeaders,
+  'user-agent': 'Social972 geocoder/1.1 (+https://github.com/chrisou972/social972)',
 }
 
 const schemaDayMap = {
@@ -31,6 +38,42 @@ const schemaDayMap = {
 }
 
 const categoryDefinitions = [
+  {
+    id: 'aide_alimentaire',
+    label: 'Aide alimentaire',
+    url: 'https://martinique.deets.gouv.fr/sites/martinique.deets.gouv.fr/IMG/pdf/liste_associations_habilitees_a_l_aide_alimentaire_2022_2_.pdf',
+    audiences: ['Tout public', 'Familles', 'Urgence sociale'],
+    tags: ['Aide alimentaire', 'Epicerie solidaire', 'Colis'],
+    summary:
+      "Associations habilitees et lieux solidaires pour l'aide alimentaire, les colis, repas et epiceries sociales.",
+  },
+  {
+    id: 'logement',
+    label: 'Logement / hebergement',
+    url: 'https://www.actionlogement.fr/fort-de-france',
+    audiences: ['Adultes', 'Familles', 'Urgence sociale'],
+    tags: ['Logement', 'Hebergement', 'Insertion'],
+    summary:
+      "Structures utiles pour l'hebergement, l'acces au logement, l'accompagnement social et les parcours residentiels.",
+  },
+  {
+    id: 'ctm',
+    label: 'Dispositifs CTM',
+    url: 'https://www.collectivitedemartinique.mq/aides-et-demarches/',
+    audiences: ['Tout public', 'Seniors', 'Handicap'],
+    tags: ['CTM', 'Aides', 'Orientation'],
+    summary:
+      "Guichets et dispositifs de la Collectivite Territoriale de Martinique pour l'autonomie, l'accueil et l'accompagnement social.",
+  },
+  {
+    id: 'croix_rouge',
+    label: 'Croix-Rouge Martinique',
+    url: 'https://www.croix-rouge.fr/delegation-territoriale-de-la-martinique',
+    audiences: ['Tout public', 'Familles', 'Urgence sociale'],
+    tags: ['Croix-Rouge', 'Solidarite', 'Accompagnement'],
+    summary:
+      "Services et etablissements de la Croix-Rouge en Martinique pour l'urgence sociale, la sante, l'insertion et l'accompagnement.",
+  },
   {
     id: 'ccas',
     label: 'CCAS / CIAS',
@@ -177,6 +220,8 @@ const categoryDefinitions = [
   },
 ]
 
+const categoryIndex = new Map(categoryDefinitions.map((category) => [category.id, category]))
+
 const townAliases = {
   'ajoupa bouillon': "L'Ajoupa-Bouillon",
   'l ajoupa bouillon': "L'Ajoupa-Bouillon",
@@ -189,7 +234,7 @@ const townAliases = {
   ducos: 'Ducos',
   'fonds saint denis': 'Fonds-Saint-Denis',
   'fort de france': 'Fort-de-France',
-  "grand riviere": "Grand'Riviere",
+  'grand riviere': "Grand'Riviere",
   'gros morne': 'Gros-Morne',
   'la trinite': 'La Trinite',
   'le carbet': 'Le Carbet',
@@ -251,6 +296,23 @@ function normaliseList(value) {
   }
 
   return Array.isArray(value) ? value : [value]
+}
+
+function sleep(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}
+
+async function loadJsonFile(filePath, fallbackValue) {
+  try {
+    const fileContents = await fs.readFile(filePath, 'utf8')
+    return JSON.parse(fileContents)
+  } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
+      return fallbackValue
+    }
+
+    throw error
+  }
 }
 
 function formatAddress(address) {
@@ -325,6 +387,16 @@ async function fetchHtml(url) {
   }
 
   return response.text()
+}
+
+async function fetchUrlAvailable(url) {
+  const response = await fetch(url, {
+    headers: fetchHeaders,
+    method: 'GET',
+    redirect: 'follow',
+  })
+
+  return response.ok
 }
 
 function extractTotalPages(html) {
@@ -480,6 +552,183 @@ function mergeRecords(records) {
   })
 }
 
+async function loadManualSourceRecords() {
+  const records = await loadJsonFile(manualRecordsSourcePath, [])
+
+  if (!Array.isArray(records)) {
+    throw new Error('Le fichier manual-structures.json doit contenir un tableau JSON.')
+  }
+
+  return records
+}
+
+async function loadGeocodeCache() {
+  const rawCache = await loadJsonFile(geocodeCachePath, {})
+
+  if (!rawCache || typeof rawCache !== 'object' || Array.isArray(rawCache)) {
+    throw new Error('Le fichier geocode-cache.json doit contenir un objet JSON.')
+  }
+
+  return rawCache
+}
+
+async function saveGeocodeCache(cache) {
+  if (isCheckOnly) {
+    return
+  }
+
+  await fs.writeFile(geocodeCachePath, `${JSON.stringify(cache, null, 2)}\n`)
+}
+
+function normalizeGeocodeKey(value) {
+  return normalizeLookupKey(value)
+}
+
+async function geocodeAddress(address, geocodeCache) {
+  const normalizedAddress = compactText(address)
+
+  if (!normalizedAddress) {
+    return null
+  }
+
+  const cacheKey = normalizeGeocodeKey(normalizedAddress)
+  const cached = geocodeCache[cacheKey]
+
+  if (cached && safeNumber(cached.latitude) !== null && safeNumber(cached.longitude) !== null) {
+    return {
+      latitude: Number(cached.latitude),
+      longitude: Number(cached.longitude),
+    }
+  }
+
+  const query = normalizedAddress.toLowerCase().includes('martinique')
+    ? normalizedAddress
+    : `${normalizedAddress}, Martinique, France`
+  const geocodeUrl = new URL('https://nominatim.openstreetmap.org/search')
+
+  geocodeUrl.searchParams.set('format', 'jsonv2')
+  geocodeUrl.searchParams.set('limit', '1')
+  geocodeUrl.searchParams.set('countrycodes', 'fr')
+  geocodeUrl.searchParams.set('q', query)
+
+  await sleep(1100)
+
+  try {
+    const response = await fetch(geocodeUrl, { headers: geocodeHeaders })
+
+    if (!response.ok) {
+      return null
+    }
+
+    const matches = await response.json()
+    const firstMatch = Array.isArray(matches) ? matches[0] : null
+    const latitude = safeNumber(firstMatch?.lat)
+    const longitude = safeNumber(firstMatch?.lon)
+
+    if (latitude === null || longitude === null) {
+      return null
+    }
+
+    const coordinates = { latitude, longitude }
+    geocodeCache[cacheKey] = coordinates
+    return coordinates
+  } catch {
+    return null
+  }
+}
+
+function buildManualCoordinates(recordCoordinates) {
+  if (!recordCoordinates || typeof recordCoordinates !== 'object') {
+    return null
+  }
+
+  const latitude = safeNumber(recordCoordinates.latitude)
+  const longitude = safeNumber(recordCoordinates.longitude)
+
+  if (latitude === null || longitude === null) {
+    return null
+  }
+
+  return { latitude, longitude }
+}
+
+async function hydrateManualRecord(rawRecord, geocodeCache, generatedAt) {
+  const category = categoryIndex.get(rawRecord.categoryId)
+
+  if (!category) {
+    throw new Error(`Categorie manuelle inconnue: ${rawRecord.categoryId}`)
+  }
+
+  const coordinates =
+    buildManualCoordinates(rawRecord.coordinates) ??
+    (await geocodeAddress(rawRecord.address ?? '', geocodeCache))
+
+  return {
+    id: compactText(rawRecord.id),
+    name: compactText(rawRecord.name),
+    serviceType: compactText(rawRecord.serviceType || category.label),
+    categoryId: category.id,
+    categoryLabel: category.label,
+    summary: compactText(rawRecord.summary || category.summary),
+    description: compactText(rawRecord.description || category.summary),
+    town: normalizeTown(rawRecord.town),
+    postalCode: compactText(rawRecord.postalCode),
+    address: compactText(rawRecord.address),
+    phoneNumbers: uniq(normaliseList(rawRecord.phoneNumbers).map((phone) => compactText(phone))),
+    emails: uniq(normaliseList(rawRecord.emails).map((email) => compactText(email))),
+    website: compactText(rawRecord.website) || null,
+    coordinates,
+    audiences: uniq(
+      normaliseList(rawRecord.audiences)
+        .map((audience) => compactText(audience))
+        .filter(Boolean)
+        .concat(category.audiences),
+    ),
+    tags: uniq(
+      normaliseList(rawRecord.tags)
+        .map((tag) => compactText(tag))
+        .filter(Boolean)
+        .concat(category.tags),
+    ),
+    hours: uniq(normaliseList(rawRecord.hours).map((hour) => compactText(hour))),
+    sourceName: compactText(rawRecord.sourceName || 'Source officielle'),
+    sourceUrl: compactText(rawRecord.sourceUrl),
+    sourceCategoryUrl: compactText(rawRecord.sourceCategoryUrl || category.url || rawRecord.sourceUrl),
+    lastVerifiedAt: generatedAt,
+  }
+}
+
+async function verifyManualSources(rawRecords, failures) {
+  const sources = new Map()
+
+  for (const record of rawRecords) {
+    const sourceUrl = compactText(record.sourceUrl)
+
+    if (!sourceUrl || sources.has(sourceUrl)) {
+      continue
+    }
+
+    sources.set(sourceUrl, {
+      label: compactText(record.name || 'Source manuelle'),
+      categoryId: compactText(record.categoryId || 'manual'),
+    })
+  }
+
+  await asyncPool(4, [...sources.entries()], async ([sourceUrl, sourceInfo]) => {
+    const isAvailable = await fetchUrlAvailable(sourceUrl)
+
+    if (!isAvailable) {
+      const category = categoryIndex.get(sourceInfo.categoryId)
+
+      failures.push({
+        categoryId: sourceInfo.categoryId,
+        categoryLabel: category?.label ?? 'Source manuelle',
+        message: `Source indisponible pour ${sourceInfo.label}: ${sourceUrl}`,
+      })
+    }
+  })
+}
+
 function buildReport(records, failures, generatedAt) {
   const audienceLabels = uniq(records.flatMap((record) => record.audiences)).sort((left, right) =>
     left.localeCompare(right, 'fr'),
@@ -555,7 +804,7 @@ async function main() {
   const collectedRecords = []
   const failures = []
 
-  for (const category of categoryDefinitions) {
+  for (const category of categoryDefinitions.filter((entry) => entry.url.includes('service-public'))) {
     try {
       const detailUrls = await collectCategoryLinks(category)
       const records = await asyncPool(6, detailUrls, (detailUrl) => collectRecord(detailUrl, category))
@@ -572,6 +821,32 @@ async function main() {
   }
 
   const generatedAt = new Date().toISOString()
+  const rawManualRecords = await loadManualSourceRecords()
+  const geocodeCache = await loadGeocodeCache()
+  const geocodeCacheBefore = JSON.stringify(geocodeCache)
+
+  await verifyManualSources(rawManualRecords, failures)
+
+  for (const rawRecord of rawManualRecords) {
+    try {
+      const manualRecord = await hydrateManualRecord(rawRecord, geocodeCache, generatedAt)
+      collectedRecords.push(manualRecord)
+    } catch (error) {
+      const category = categoryIndex.get(compactText(rawRecord.categoryId))
+
+      failures.push({
+        categoryId: compactText(rawRecord.categoryId || 'manual'),
+        categoryLabel: category?.label ?? 'Source manuelle',
+        message: error instanceof Error ? error.message : 'Erreur inconnue',
+      })
+      console.error('ERREUR fiche manuelle:', error)
+    }
+  }
+
+  if (JSON.stringify(geocodeCache) !== geocodeCacheBefore) {
+    await saveGeocodeCache(geocodeCache)
+  }
+
   const records = mergeRecords(collectedRecords)
   const { report, markdown } = buildReport(records, failures, generatedAt)
 

@@ -7,6 +7,7 @@ import {
   Compass,
   Gavel,
   HandHeart,
+  HeartHandshake,
   HeartPulse,
   Home,
   ShieldAlert,
@@ -22,6 +23,26 @@ export const categoryVisuals: Record<
     softAccent: string
   }
 > = {
+  aide_alimentaire: {
+    icon: HandHeart,
+    accent: '#f97316',
+    softAccent: 'rgba(249, 115, 22, 0.16)',
+  },
+  logement: {
+    icon: Home,
+    accent: '#22c55e',
+    softAccent: 'rgba(34, 197, 94, 0.16)',
+  },
+  ctm: {
+    icon: Building2,
+    accent: '#0ea5e9',
+    softAccent: 'rgba(14, 165, 233, 0.16)',
+  },
+  croix_rouge: {
+    icon: HeartHandshake,
+    accent: '#ef4444',
+    softAccent: 'rgba(239, 68, 68, 0.16)',
+  },
   ccas: {
     icon: Home,
     accent: '#f59e0b',
