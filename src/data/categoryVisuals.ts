@@ -38,6 +38,11 @@ export const categoryVisuals: Record<
     accent: '#0ea5e9',
     softAccent: 'rgba(14, 165, 233, 0.16)',
   },
+  hopitaux_publics: {
+    icon: HeartPulse,
+    accent: '#dc2626',
+    softAccent: 'rgba(220, 38, 38, 0.16)',
+  },
   croix_rouge: {
     icon: HeartHandshake,
     accent: '#ef4444',

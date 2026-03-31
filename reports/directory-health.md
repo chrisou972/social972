@@ -1,20 +1,21 @@
 # Rapport Social972
 
-- Genere le : 2026-03-31T18:53:24.982Z
-- Structures recensees : 173
+- Genere le : 2026-03-31T19:50:08.952Z
+- Structures recensees : 181
 - Communes couvertes : 34
-- Categories synchronisees : 20
-- Fiches avec GPS : 148/173
-- Fiches avec telephone : 158/173
-- Fiches avec email : 104/173
+- Categories synchronisees : 21
+- Fiches avec GPS : 149/181
+- Fiches avec telephone : 166/181
+- Fiches avec email : 105/181
 
 ## Repartition par categorie
 
 | Categorie | Nombre |
 | --- | ---: |
 | Aide alimentaire | 17 |
-| Logement / hebergement | 4 |
+| Logement / hébergement | 4 |
 | Dispositifs CTM | 6 |
+| Hôpitaux publics | 8 |
 | Croix-Rouge Martinique | 7 |
 | CCAS / CIAS | 34 |
 | France services | 25 |
@@ -30,7 +31,7 @@
 | Droits des femmes | 1 |
 | Aide aux victimes | 3 |
 | Information seniors | 2 |
-| Aidants personnes agees | 1 |
+| Aidants personnes âgées | 1 |
 | ARS | 1 |
 
 ## Repartition par public
@@ -42,20 +43,21 @@
 | Adultes | 87 |
 | Aidants | 9 |
 | Associations | 1 |
-| Egalite | 1 |
+| Égalité | 1 |
 | Emploi | 29 |
-| Enfants | 6 |
+| Enfants | 7 |
 | Familles | 74 |
-| Femmes | 29 |
+| Femmes | 30 |
 | Grossesse | 6 |
-| Handicap | 10 |
+| Handicap | 11 |
 | Insertion | 19 |
 | Jeunes | 22 |
-| Parents | 10 |
+| Parents | 11 |
 | Reconversion | 9 |
 | Salaries | 1 |
-| Sante | 11 |
+| Sante | 1 |
+| Santé | 18 |
 | Seniors | 36 |
-| Tout public | 126 |
-| Urgence sociale | 28 |
+| Tout public | 134 |
+| Urgence sociale | 36 |
 | Victimes | 28 |

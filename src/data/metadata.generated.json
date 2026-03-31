@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-03-31T18:53:24.982Z",
-  "totalRecords": 173,
-  "totalCategories": 20,
+  "generatedAt": "2026-03-31T19:50:08.952Z",
+  "totalRecords": 181,
+  "totalCategories": 21,
   "totalCommunes": 34,
-  "totalPhones": 218,
-  "totalEmails": 121,
+  "totalPhones": 226,
+  "totalEmails": 125,
   "categories": [
     {
       "id": "aide_alimentaire",
@@ -14,7 +14,7 @@
     },
     {
       "id": "logement",
-      "label": "Logement / hebergement",
+      "label": "Logement / hébergement",
       "count": 4,
       "url": "https://www.actionlogement.fr/fort-de-france"
     },
@@ -23,6 +23,12 @@
       "label": "Dispositifs CTM",
       "count": 6,
       "url": "https://www.collectivitedemartinique.mq/aides-et-demarches/"
+    },
+    {
+      "id": "hopitaux_publics",
+      "label": "Hôpitaux publics",
+      "count": 8,
+      "url": "https://www.chu-martinique.fr/presentation-du-chu-de-martinique/"
     },
     {
       "id": "croix_rouge",
@@ -116,7 +122,7 @@
     },
     {
       "id": "aidants",
-      "label": "Aidants personnes agees",
+      "label": "Aidants personnes âgées",
       "count": 1,
       "url": "https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/accompagnement_personnes_agees"
     },
@@ -149,7 +155,7 @@
       "count": 1
     },
     {
-      "label": "Egalite",
+      "label": "Égalité",
       "count": 1
     },
     {
@@ -158,7 +164,7 @@
     },
     {
       "label": "Enfants",
-      "count": 6
+      "count": 7
     },
     {
       "label": "Familles",
@@ -166,7 +172,7 @@
     },
     {
       "label": "Femmes",
-      "count": 29
+      "count": 30
     },
     {
       "label": "Grossesse",
@@ -174,7 +180,7 @@
     },
     {
       "label": "Handicap",
-      "count": 10
+      "count": 11
     },
     {
       "label": "Insertion",
@@ -186,7 +192,7 @@
     },
     {
       "label": "Parents",
-      "count": 10
+      "count": 11
     },
     {
       "label": "Reconversion",
@@ -198,7 +204,11 @@
     },
     {
       "label": "Sante",
-      "count": 11
+      "count": 1
+    },
+    {
+      "label": "Santé",
+      "count": 18
     },
     {
       "label": "Seniors",
@@ -206,11 +216,11 @@
     },
     {
       "label": "Tout public",
-      "count": 126
+      "count": 134
     },
     {
       "label": "Urgence sociale",
-      "count": 28
+      "count": 36
     },
     {
       "label": "Victimes",
@@ -218,9 +228,9 @@
     }
   ],
   "coverage": {
-    "coordinates": 148,
-    "phones": 158,
-    "emails": 104
+    "coordinates": 149,
+    "phones": 166,
+    "emails": 105
   },
   "failures": []
 }

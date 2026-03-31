@@ -308,7 +308,7 @@
 
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
 }
 
@@ -345,6 +345,17 @@
   color: var(--text-subtle);
 }
 
+.featured-card.is-active strong,
+.featured-card.is-active .featured-copy small,
+.featured-card.is-active .featured-count {
+  color: rgba(248, 250, 252, 0.94);
+}
+
+.featured-card.is-active .featured-icon {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+}
+
 .filter-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: end;
@@ -365,6 +376,22 @@
   color: var(--text-primary);
   border-radius: 18px;
   padding: 14px 16px;
+  color-scheme: light;
+}
+
+:root[data-theme='night'] .select-field select {
+  color-scheme: dark;
+}
+
+.select-field select:focus {
+  outline: 2px solid var(--border-strong);
+  outline-offset: 2px;
+}
+
+.select-field select option,
+.select-field select optgroup {
+  background: var(--card-bg);
+  color: var(--text-primary);
 }
 
 .filter-toggle {

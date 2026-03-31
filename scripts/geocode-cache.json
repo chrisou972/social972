@@ -30,5 +30,9 @@
   "13 rue camille sylvestre, 97232 le lamentin": {
     "latitude": 14.6143163,
     "longitude": -61.0003228
+  },
+  "rue jean eugene fatier, 97220 la trinite": {
+    "latitude": 14.7377301,
+    "longitude": -60.9650941
   }
 }

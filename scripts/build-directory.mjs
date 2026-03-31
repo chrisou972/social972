@@ -43,18 +43,18 @@ const categoryDefinitions = [
     label: 'Aide alimentaire',
     url: 'https://martinique.deets.gouv.fr/sites/martinique.deets.gouv.fr/IMG/pdf/liste_associations_habilitees_a_l_aide_alimentaire_2022_2_.pdf',
     audiences: ['Tout public', 'Familles', 'Urgence sociale'],
-    tags: ['Aide alimentaire', 'Epicerie solidaire', 'Colis'],
+    tags: ['Aide alimentaire', 'Épicerie solidaire', 'Colis'],
     summary:
-      "Associations habilitees et lieux solidaires pour l'aide alimentaire, les colis, repas et epiceries sociales.",
+      "Associations habilitées et lieux solidaires pour l'aide alimentaire, les colis, repas et épiceries sociales.",
   },
   {
     id: 'logement',
-    label: 'Logement / hebergement',
+    label: 'Logement / hébergement',
     url: 'https://www.actionlogement.fr/fort-de-france',
     audiences: ['Adultes', 'Familles', 'Urgence sociale'],
-    tags: ['Logement', 'Hebergement', 'Insertion'],
+    tags: ['Logement', 'Hébergement', 'Insertion'],
     summary:
-      "Structures utiles pour l'hebergement, l'acces au logement, l'accompagnement social et les parcours residentiels.",
+      "Structures utiles pour l'hébergement, l'accès au logement, l'accompagnement social et les parcours résidentiels.",
   },
   {
     id: 'ctm',
@@ -63,34 +63,42 @@ const categoryDefinitions = [
     audiences: ['Tout public', 'Seniors', 'Handicap'],
     tags: ['CTM', 'Aides', 'Orientation'],
     summary:
-      "Guichets et dispositifs de la Collectivite Territoriale de Martinique pour l'autonomie, l'accueil et l'accompagnement social.",
+      "Guichets et dispositifs de la Collectivité Territoriale de Martinique pour l'autonomie, l'accueil et l'accompagnement social.",
+  },
+  {
+    id: 'hopitaux_publics',
+    label: 'Hôpitaux publics',
+    url: 'https://www.chu-martinique.fr/presentation-du-chu-de-martinique/',
+    audiences: ['Tout public', 'Santé', 'Urgence sociale'],
+    tags: ['Hôpital public', 'Soins', 'Urgences'],
+    summary:
+      "Établissements publics de santé en Martinique pour les soins, l'accueil hospitalier et l'orientation des usagers.",
   },
   {
     id: 'croix_rouge',
     label: 'Croix-Rouge Martinique',
     url: 'https://www.croix-rouge.fr/delegation-territoriale-de-la-martinique',
     audiences: ['Tout public', 'Familles', 'Urgence sociale'],
-    tags: ['Croix-Rouge', 'Solidarite', 'Accompagnement'],
+    tags: ['Croix-Rouge', 'Solidarité', 'Accompagnement'],
     summary:
-      "Services et etablissements de la Croix-Rouge en Martinique pour l'urgence sociale, la sante, l'insertion et l'accompagnement.",
+      "Services et établissements de la Croix-Rouge en Martinique pour l'urgence sociale, la santé, l'insertion et l'accompagnement.",
   },
   {
     id: 'ccas',
     label: 'CCAS / CIAS',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/ccas',
     audiences: ['Tout public', 'Adultes', 'Familles'],
-    tags: ['Aides sociales', 'Proximite', 'Accompagnement'],
+    tags: ['Aides sociales', 'Proximité', 'Accompagnement'],
     summary:
-      "Structures communales d'accompagnement social pour les aides locales, les demarches et l'orientation.",
+      "Structures communales d'accompagnement social pour les aides locales, les démarches et l'orientation.",
   },
   {
     id: 'france_services',
     label: 'France services',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/france_services',
     audiences: ['Tout public', 'Adultes', 'Seniors'],
-    tags: ['Demarches', 'Administratif', 'Proximite'],
-    summary:
-      "Guichets de proximite pour les demarches administratives et l'accompagnement numerique.",
+    tags: ['Démarches', 'Administratif', 'Proximité'],
+    summary: "Guichets de proximité pour les démarches administratives et l'accompagnement numérique.",
   },
   {
     id: 'point_justice',
@@ -99,7 +107,7 @@ const categoryDefinitions = [
     audiences: ['Tout public', 'Femmes', 'Victimes'],
     tags: ['Justice', 'Droits', 'Information'],
     summary:
-      "Lieux d'information juridique, d'acces au droit et d'orientation vers les acteurs competents.",
+      "Lieux d'information juridique, d'accès au droit et d'orientation vers les acteurs compétents.",
   },
   {
     id: 'mission_locale',
@@ -108,7 +116,7 @@ const categoryDefinitions = [
     audiences: ['Jeunes', 'Insertion', 'Emploi'],
     tags: ['Jeunes', 'Insertion', 'Orientation'],
     summary:
-      "Accompagnement des 16-25 ans pour l'emploi, la formation, la mobilite et l'insertion sociale.",
+      "Accompagnement des 16-25 ans pour l'emploi, la formation, la mobilité et l'insertion sociale.",
   },
   {
     id: 'france_travail',
@@ -117,32 +125,32 @@ const categoryDefinitions = [
     audiences: ['Adultes', 'Emploi', 'Reconversion'],
     tags: ['Emploi', 'Orientation', 'Insertion'],
     summary:
-      "Agences d'accompagnement a l'emploi, a la formation et au suivi des demandeurs d'emploi.",
+      "Agences d'accompagnement à l'emploi, à la formation et au suivi des demandeurs d'emploi.",
   },
   {
     id: 'cpam',
     label: 'CPAM',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/cpam',
-    audiences: ['Tout public', 'Sante', 'Adultes'],
-    tags: ['Sante', 'Couverture', 'Assurance maladie'],
+    audiences: ['Tout public', 'Santé', 'Adultes'],
+    tags: ['Santé', 'Couverture', 'Assurance maladie'],
     summary:
-      "Points d'accueil pour les demarches de couverture sante, remboursements et droits maladie.",
+      "Points d'accueil pour les démarches de couverture santé, remboursements et droits maladie.",
   },
   {
     id: 'caf',
     label: 'CAF',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/caf',
     audiences: ['Familles', 'Parents', 'Adultes'],
-    tags: ['Famille', 'Allocations', 'Parentalite'],
+    tags: ['Famille', 'Allocations', 'Parentalité'],
     summary:
-      "Organisme de reference pour les prestations familiales, aides au logement et soutien a la parentalite.",
+      "Organisme de référence pour les prestations familiales, aides au logement et soutien à la parentalité.",
   },
   {
     id: 'pmi',
     label: 'PMI',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/pmi',
     audiences: ['Enfants', 'Parents', 'Grossesse'],
-    tags: ['Petite enfance', 'Sante', 'Maternalite'],
+    tags: ['Petite enfance', 'Santé', 'Maternité'],
     summary:
       "Centres de protection maternelle et infantile pour le suivi de la grossesse et de la petite enfance.",
   },
@@ -151,7 +159,7 @@ const categoryDefinitions = [
     label: 'Point info famille',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/pif',
     audiences: ['Familles', 'Parents', 'Adolescents'],
-    tags: ['Famille', 'Parentalite', 'Orientation'],
+    tags: ['Famille', 'Parentalité', 'Orientation'],
     summary:
       "Points d'accueil et d'information pour orienter les familles vers les dispositifs existants.",
   },
@@ -162,7 +170,7 @@ const categoryDefinitions = [
     audiences: ['Handicap', 'Aidants', 'Familles'],
     tags: ['Handicap', 'Droits', 'Compensation'],
     summary:
-      "Maison departementale pour les droits, aides et demarches des personnes en situation de handicap.",
+      "Maison départementale pour les droits, aides et démarches des personnes en situation de handicap.",
   },
   {
     id: 'cap_emploi',
@@ -171,25 +179,24 @@ const categoryDefinitions = [
     audiences: ['Handicap', 'Emploi', 'Adultes'],
     tags: ['Handicap', 'Insertion', 'Emploi'],
     summary:
-      "Accompagnement specialise vers l'emploi pour les personnes en situation de handicap.",
+      "Accompagnement spécialisé vers l'emploi pour les personnes en situation de handicap.",
   },
   {
     id: 'drdfe',
     label: 'Droits des femmes',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/dr_femmes',
-    audiences: ['Femmes', 'Egalite', 'Victimes'],
-    tags: ['Femmes', 'Egalite', 'Orientation'],
+    audiences: ['Femmes', 'Égalité', 'Victimes'],
+    tags: ['Femmes', 'Égalité', 'Orientation'],
     summary:
-      "Service regional d'orientation pour l'egalite femmes-hommes et l'acces aux droits.",
+      "Service régional d'orientation pour l'égalité femmes-hommes et l'accès aux droits.",
   },
   {
     id: 'aav',
     label: "Aide aux victimes",
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/aav',
     audiences: ['Victimes', 'Femmes', 'Tout public'],
-    tags: ['Ecoute', 'Protection', 'Accompagnement'],
-    summary:
-      "Associations d'ecoute, de protection et d'accompagnement des victimes.",
+    tags: ['Écoute', 'Protection', 'Accompagnement'],
+    summary: "Associations d'écoute, de protection et d'accompagnement des victimes.",
   },
   {
     id: 'clic',
@@ -198,25 +205,25 @@ const categoryDefinitions = [
     audiences: ['Seniors', 'Aidants', 'Familles'],
     tags: ['Seniors', 'Autonomie', 'Information'],
     summary:
-      "Points d'information locale pour les personnes agees, la perte d'autonomie et les aidants.",
+      "Points d'information locale pour les personnes âgées, la perte d'autonomie et les aidants.",
   },
   {
     id: 'aidants',
-    label: 'Aidants personnes agees',
+    label: 'Aidants personnes âgées',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/accompagnement_personnes_agees',
     audiences: ['Aidants', 'Seniors', 'Familles'],
-    tags: ['Aidants', 'Repit', 'Autonomie'],
+    tags: ['Aidants', 'Répit', 'Autonomie'],
     summary:
-      "Plateformes de soutien, d'ecoute et de repit pour les aidants de personnes agees.",
+      "Plateformes de soutien, d'écoute et de répit pour les aidants de personnes âgées.",
   },
   {
     id: 'ars',
     label: 'ARS',
     url: 'https://lannuaire.service-public.gouv.fr/navigation/martinique/martinique/ars',
-    audiences: ['Tout public', 'Sante', 'Handicap'],
-    tags: ['Sante', 'Orientation', 'Prevention'],
+    audiences: ['Tout public', 'Santé', 'Handicap'],
+    tags: ['Santé', 'Orientation', 'Prévention'],
     summary:
-      "Agence regionale de sante pour l'organisation territoriale des dispositifs de sante et de prevention.",
+      "Agence régionale de santé pour l'organisation territoriale des dispositifs de santé et de prévention.",
   },
 ]
 
@@ -234,34 +241,34 @@ const townAliases = {
   ducos: 'Ducos',
   'fonds saint denis': 'Fonds-Saint-Denis',
   'fort de france': 'Fort-de-France',
-  'grand riviere': "Grand'Riviere",
+  'grand riviere': "Grand'Rivière",
   'gros morne': 'Gros-Morne',
-  'la trinite': 'La Trinite',
+  'la trinite': 'La Trinité',
   'le carbet': 'Le Carbet',
   'le diamant': 'Le Diamant',
-  'le francois': 'Le Francois',
+  'le francois': 'Le François',
   'le lamentin': 'Le Lamentin',
   'le lorrain': 'Le Lorrain',
   'le marigot': 'Le Marigot',
   'le marin': 'Le Marin',
   'le morne rouge': 'Le Morne-Rouge',
   'le morne vert': 'Le Morne-Vert',
-  'le precheur': 'Le Precheur',
+  'le precheur': 'Le Prêcheur',
   'le robert': 'Le Robert',
   'le vauclin': 'Le Vauclin',
   macouba: 'Macouba',
-  'riviere pilote': 'Riviere-Pilote',
-  'riviere salee': 'Riviere-Salee',
+  'riviere pilote': 'Rivière-Pilote',
+  'riviere salee': 'Rivière-Salée',
   'saint esprit': 'Saint-Esprit',
   'saint joseph': 'Saint-Joseph',
   'saint pierre': 'Saint-Pierre',
   'sainte anne': 'Sainte-Anne',
   'sainte luce': 'Sainte-Luce',
   'sainte marie': 'Sainte-Marie',
-  schoelcher: 'Schoelcher',
-  trinite: 'La Trinite',
-  'trois ilets': 'Les Trois-Ilets',
-  'les trois ilets': 'Les Trois-Ilets',
+  schoelcher: 'Schœlcher',
+  trinite: 'La Trinité',
+  'trois ilets': 'Les Trois-Îlets',
+  'les trois ilets': 'Les Trois-Îlets',
 }
 
 function compactText(value) {

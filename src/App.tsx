@@ -50,7 +50,13 @@ type BeforeInstallPromptEvent = Event & {
 
 const records = directoryRecords as DirectoryRecord[]
 const metadata = directoryMetadata as DirectoryMetadata
-const featuredCategoryIds = ['aide_alimentaire', 'logement', 'ctm', 'croix_rouge']
+const featuredCategoryIds = [
+  'aide_alimentaire',
+  'logement',
+  'hopitaux_publics',
+  'ctm',
+  'croix_rouge',
+]
 const fallbackVisual = {
   icon: HeartHandshake,
   accent: '#38bdf8',
@@ -72,8 +78,8 @@ function setMetaByProperty(property: string, content: string) {
 }
 
 function buildRecordDescription(record: DirectoryRecord) {
-  const contact = record.phoneNumbers[0] ? ` Telephone: ${record.phoneNumbers[0]}.` : ''
-  return `${record.name}. ${record.categoryLabel} en Martinique${record.town ? ` a ${record.town}` : ''}. ${record.summary}.${contact}`
+  const contact = record.phoneNumbers[0] ? ` Téléphone : ${record.phoneNumbers[0]}.` : ''
+  return `${record.name}. ${record.categoryLabel} en Martinique${record.town ? ` à ${record.town}` : ''}. ${record.summary}.${contact}`
 }
 
 function App() {
@@ -145,7 +151,7 @@ function App() {
     selectedAudience !== 'all' ? selectedAudience : null,
     selectedTown !== 'all' ? selectedTown : null,
     favoritesOnly ? 'Favoris' : null,
-    query ? `Recherche: ${query}` : null,
+    query ? `Recherche : ${query}` : null,
   ].filter((value): value is string => Boolean(value))
 
   const applyTheme = useEffectEvent((nextTheme: ThemeMode) => {
@@ -249,7 +255,7 @@ function App() {
       return
     }
 
-    setGateFeedback('Ce portail s ouvre avec une reponse liee a la solidarite. Reessaie.')
+    setGateFeedback('Ce portail s’ouvre avec une réponse liée à la solidarité. Réessaie.')
     setQuizIndex((current) => (current + 1) % socialQuiz.length)
   }
 
@@ -276,20 +282,17 @@ function App() {
           <div>
             <p className="eyebrow">Guide social Martinique</p>
             <h1>Social972</h1>
-            <p className="brand-copy">
-              Un annuaire PWA plus epure pour trouver vite une structure, filtrer par besoin,
-              garder ses favoris et partir avec le GPS.
-            </p>
+            <p className="brand-copy">un annuaire pour trouver rapidement une structure sociale en Martinique</p>
           </div>
         </div>
 
         <div className="header-side">
           <div className="header-note">
-            <p className="eyebrow">Edition 2026</p>
-            <h2>Recherche plus claire, nouveaux parcours essentiels.</h2>
+            <p className="eyebrow">Édition 2026</p>
+            <h2>Recherche plus claire, accès essentiels mieux organisés.</h2>
             <p className="brand-copy">
-              L annuaire met maintenant en avant la Croix-Rouge, l aide alimentaire, le logement
-              social et les dispositifs CTM, avec une lecture plus nette sur ordinateur.
+              L’annuaire met en avant la Croix-Rouge, l’aide alimentaire, le logement,
+              les dispositifs CTM et les hôpitaux publics, avec une lecture plus nette sur ordinateur.
             </p>
           </div>
 
@@ -300,7 +303,7 @@ function App() {
             </span>
             <span className="meta-pill">
               <RefreshCcw size={16} />
-              Maj hebdo
+              Mise à jour hebdo
             </span>
             {installPrompt ? (
               <button className="ghost-button" type="button" onClick={installApp}>
@@ -324,11 +327,11 @@ function App() {
         <section className="dashboard-grid">
           <section className="overview-panel">
             <div className="overview-copy">
-              <p className="eyebrow">Vue d ensemble</p>
-              <h2>{filteredRecords.length} resultat(s) utiles</h2>
+              <p className="eyebrow">Vue d’ensemble</p>
+              <h2>{filteredRecords.length} résultat(s) utiles</h2>
               <p className="panel-copy">
                 Recherche rapide par structure, public, commune ou contact. La disposition met
-                l accent sur les parcours les plus recherches et laisse le detail respirer.
+                l’accent sur les parcours les plus recherchés et laisse le détail respirer.
               </p>
             </div>
 
@@ -339,7 +342,7 @@ function App() {
               </article>
               <article className="stat-card">
                 <strong>{metadata.coverage.coordinates}</strong>
-                <span>acces GPS</span>
+                <span>accès GPS</span>
               </article>
               <article className="stat-card">
                 <strong>{favoriteIds.length}</strong>
@@ -354,7 +357,7 @@ function App() {
 
           <section className="filter-panel">
             <div className="section-heading">
-              <span>Acces rapides</span>
+              <span>Accès rapides</span>
               <small>Parcours prioritaires</small>
             </div>
 
@@ -371,7 +374,7 @@ function App() {
 
               <button className="ghost-button" type="button" onClick={resetFilters}>
                 <RefreshCcw size={16} />
-                Reinitialiser
+                Réinitialiser
               </button>
             </div>
 
@@ -382,7 +385,7 @@ function App() {
                 onClick={() => setCategory('all')}
               >
                 <span className="featured-copy">
-                  <strong>Tout l annuaire</strong>
+                  <strong>Tout l’annuaire</strong>
                   <small>{metadata.totalRecords} fiches officielles</small>
                 </span>
                 <span className="featured-count">{metadata.totalRecords}</span>
@@ -441,9 +444,9 @@ function App() {
               </label>
 
               <label className="select-field">
-                <span>Categorie</span>
+                <span>Catégorie</span>
                 <select value={selectedCategory} onChange={(event) => setCategory(event.target.value)}>
-                  <option value="all">Toutes les categories</option>
+                  <option value="all">Toutes les catégories</option>
                   {metadata.categories.map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.label} ({category.count})
@@ -482,12 +485,12 @@ function App() {
             <section className="list-panel">
               <div className="panel-head">
                 <div>
-                  <p className="eyebrow">Resultats</p>
+                  <p className="eyebrow">Résultats</p>
                   <h2>{filteredRecords.length} fiche(s)</h2>
                   <p className="panel-copy">
                     {selectedCategoryMeta
-                      ? `${selectedCategoryMeta.label} · mise a jour ${formatDateTime(metadata.generatedAt)}`
-                      : `Annuaire complet · mise a jour ${formatDateTime(metadata.generatedAt)}`}
+                      ? `${selectedCategoryMeta.label} · mise à jour ${formatDateTime(metadata.generatedAt)}`
+                      : `Annuaire complet · mise à jour ${formatDateTime(metadata.generatedAt)}`}
                   </p>
                 </div>
 
@@ -501,7 +504,7 @@ function App() {
                 {filteredRecords.length === 0 ? (
                   <article className="empty-state">
                     <HeartHandshake size={28} />
-                    <h3>Aucun resultat pour ces filtres</h3>
+                    <h3>Aucun résultat pour ces filtres</h3>
                     <p>Essaie une autre commune, un autre public ou retire le filtre favoris.</p>
                   </article>
                 ) : (
@@ -616,20 +619,20 @@ function App() {
                     {activeRecord.emails[0] ? (
                       <a className="primary-action" href={`mailto:${activeRecord.emails[0]}`}>
                         <Mail size={18} />
-                        Ecrire
+                        Écrire
                       </a>
                     ) : null}
                     {directions ? (
                       <a className="primary-action" href={directions.google} target="_blank" rel="noreferrer">
                         <MapPinned size={18} />
-                        Itineraire
+                        Itinéraire
                       </a>
                     ) : null}
                   </section>
 
                   <section className="detail-card">
                     <div className="section-heading">
-                      <span>Coordonnees</span>
+                      <span>Coordonnées</span>
                       <small>{activeRecord.serviceType}</small>
                     </div>
 
@@ -638,7 +641,7 @@ function App() {
                         <MapPinned size={16} />
                         <div>
                           <strong>Adresse</strong>
-                          <p>{activeRecord.address || 'Adresse non communiquee'}</p>
+                          <p>{activeRecord.address || 'Adresse non communiquée'}</p>
                         </div>
                       </div>
 
@@ -646,7 +649,7 @@ function App() {
                         <a key={phone} className="info-line info-line--link" href={`tel:${phone}`}>
                           <Phone size={16} />
                           <div>
-                            <strong>Telephone</strong>
+                            <strong>Téléphone</strong>
                             <p>{phone}</p>
                           </div>
                         </a>
@@ -684,7 +687,7 @@ function App() {
                           </a>
                         </>
                       ) : (
-                        <p className="muted-copy">Aucune coordonnee GPS disponible pour cette fiche.</p>
+                        <p className="muted-copy">Aucune coordonnée GPS disponible pour cette fiche.</p>
                       )}
                     </div>
 
@@ -722,7 +725,7 @@ function App() {
 
                   <section className="detail-card">
                     <div className="section-heading">
-                      <span>Source et fiabilite</span>
+                      <span>Source et fiabilité</span>
                       <small>{activeRecord.sourceName}</small>
                     </div>
 
@@ -730,7 +733,7 @@ function App() {
                       <div className="info-line">
                         <ShieldCheck size={16} />
                         <div>
-                          <strong>Derniere verification</strong>
+                          <strong>Dernière vérification</strong>
                           <p>{formatDateTime(activeRecord.lastVerifiedAt)}</p>
                         </div>
                       </div>
@@ -758,8 +761,8 @@ function App() {
                       <small>Simple et gratuit</small>
                     </div>
                     <p className="panel-copy">
-                      Les suggestions ouvrent directement une issue GitHub pre-remplie pour garder
-                      les donnees a jour.
+                      Les suggestions ouvrent directement une issue GitHub pré-remplie pour garder
+                      les données à jour.
                     </p>
 
                     <div className="community-actions">
@@ -768,7 +771,7 @@ function App() {
                         <ExternalLink size={16} />
                       </a>
                       <a className="ghost-button ghost-button--wide" href={REPO_URL} target="_blank" rel="noreferrer">
-                        Voir le depot
+                        Voir le dépôt
                         <ExternalLink size={16} />
                       </a>
                     </div>
@@ -777,8 +780,8 @@ function App() {
               ) : (
                 <section className="empty-state">
                   <HeartHandshake size={28} />
-                  <h3>Aucune fiche selectionnee</h3>
-                  <p>Choisis une structure pour afficher son detail.</p>
+                  <h3>Aucune fiche sélectionnée</h3>
+                  <p>Choisis une structure pour afficher son détail.</p>
                 </section>
               )}
             </aside>
@@ -789,11 +792,11 @@ function App() {
       {!gateUnlocked ? (
         <div className="gate-overlay" role="dialog" aria-modal="true" aria-labelledby="gate-title">
           <section className="gate-card">
-            <span className="gate-badge">Entree solidaire</span>
+            <span className="gate-badge">Entrée solidaire</span>
             <h2 id="gate-title">Mini captcha social</h2>
             <p>
-              Pour entrer, choisis la reponse la plus liee a la solidarite. C est un filtre simple
-              pour cette premiere version statique.
+              Pour entrer, choisis la réponse la plus liée à la solidarité. C’est un filtre simple
+              pour cette première version statique.
             </p>
 
             <div className="quiz-block">
