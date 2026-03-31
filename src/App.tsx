@@ -282,44 +282,33 @@ function App() {
           <div>
             <p className="eyebrow">Guide social Martinique</p>
             <h1>Social972</h1>
-            <p className="brand-copy">un annuaire pour trouver rapidement une structure sociale en Martinique</p>
+            <p className="brand-copy">Un annuaire pour trouver rapidement une structure sociale en Martinique</p>
           </div>
         </div>
 
-        <div className="header-side">
-          <div className="header-note">
-            <p className="eyebrow">Édition 2026</p>
-            <h2>Recherche plus claire, accès essentiels mieux organisés.</h2>
-            <p className="brand-copy">
-              L’annuaire met en avant la Croix-Rouge, l’aide alimentaire, le logement,
-              les dispositifs CTM et les hôpitaux publics, avec une lecture plus nette sur ordinateur.
-            </p>
-          </div>
-
-          <div className="header-actions">
-            <span className="meta-pill">
-              <ShieldCheck size={16} />
-              Source officielle
-            </span>
-            <span className="meta-pill">
-              <RefreshCcw size={16} />
-              Mise à jour hebdo
-            </span>
-            {installPrompt ? (
-              <button className="ghost-button" type="button" onClick={installApp}>
-                <Download size={16} />
-                Installer
-              </button>
-            ) : null}
-            <button
-              className="theme-toggle"
-              type="button"
-              onClick={() => setTheme(theme === 'night' ? 'day' : 'night')}
-            >
-              {theme === 'night' ? <SunMedium size={16} /> : <MoonStar size={16} />}
-              {theme === 'night' ? 'Mode jour' : 'Mode nuit'}
+        <div className="header-actions">
+          <span className="meta-pill">
+            <ShieldCheck size={16} />
+            Source officielle
+          </span>
+          <span className="meta-pill">
+            <RefreshCcw size={16} />
+            Mise à jour hebdo
+          </span>
+          {installPrompt ? (
+            <button className="ghost-button" type="button" onClick={installApp}>
+              <Download size={16} />
+              Installer
             </button>
-          </div>
+          ) : null}
+          <button
+            className="theme-toggle"
+            type="button"
+            onClick={() => setTheme(theme === 'night' ? 'day' : 'night')}
+          >
+            {theme === 'night' ? <SunMedium size={16} /> : <MoonStar size={16} />}
+            {theme === 'night' ? 'Mode jour' : 'Mode nuit'}
+          </button>
         </div>
       </header>
 

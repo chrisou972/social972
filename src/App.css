@@ -47,37 +47,24 @@
   border-radius: 34px;
   padding: 24px 28px;
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 24px;
-  align-items: start;
+  align-items: center;
 }
 
-.brand-block,
-.header-side {
+.brand-block {
   display: flex;
   gap: 18px;
-}
-
-.header-side {
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.header-note {
-  width: 100%;
-  padding: 18px 20px;
-  border-radius: 26px;
-  background:
-    radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 42%),
-    var(--card-bg);
-  border: 1px solid var(--border-color);
+  align-items: center;
 }
 
 .brand-mark {
-  width: 68px;
-  height: 68px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.22), rgba(245, 158, 11, 0.16));
+  width: 84px;
+  height: 84px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 40%),
+    linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(76, 201, 240, 0.12));
   border: 1px solid var(--border-color);
   display: grid;
   place-items: center;
@@ -85,8 +72,9 @@
 }
 
 .brand-mark img {
-  width: 48px;
-  height: 48px;
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
 }
 
 .brand-copy,
@@ -109,6 +97,7 @@
 
 .header-actions {
   justify-content: flex-end;
+  align-items: center;
 }
 
 .meta-pill,
@@ -712,9 +701,9 @@
     grid-template-columns: 1fr;
   }
 
-  .brand-block,
-  .header-side {
+  .brand-block {
     flex-direction: column;
+    align-items: flex-start;
   }
 
   .panel-head {
