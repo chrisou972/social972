@@ -1,6 +1,6 @@
 # Rapport Social972
 
-- Genere le : 2026-08-17T11:31:10.127Z
+- Genere le : 2026-08-24T11:34:16.149Z
 - Structures recensees : 181
 - Communes couvertes : 34
 - Categories synchronisees : 21
